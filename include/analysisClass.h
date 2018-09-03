@@ -32,7 +32,7 @@ using namespace std;
 
 class analysisClass : public baseClass {
 public :
-  analysisClass(string * inputList, string * cutFile, string * treeName,  string *outputFileName=0, string * cutEfficFile=0, bool store_ntuple = false);
+  analysisClass(string * inputList, string * cutFile, string * treeName,  string *outputFileName=0, string * cutEfficFile=0);
   bool jet_id(size_t );
   vector < TLorentzVector > doWideJets(const vector < TLorentzVector >);
   virtual ~analysisClass();

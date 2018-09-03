@@ -13,8 +13,8 @@ JSON /mnt/t3nfs01/data01/shome/sdonato/scouting/CMSSW_8_0_30/src/CMSDIJET/DijetR
 # Variable names must be unique.
 #
 #VariableName                             value1       value2        value3       value4        level
-#------------ ------------ ------------- ------------ ------------- -----
-maxEvents                                 -1           -             -            -             -1
+#------------ ------------ -------------- ------------- ------------ ------------ ------------- ------
+maxEvents                                 10000        -             -            -             -1
 skimHLT_CaloJet40_CaloScouting_PFScouting -1           -             -            -             -1
 skimHLT_L1HTT_CaloScouting_PFScouting     -1           -             -            -             -1
 skimHLT_CaloScoutingHT250                 -1           -             -            -             -1
@@ -32,15 +32,19 @@ hadFraction                               0.95         -             -          
 emFraction                                0.95         -             -            -             -1
 # turn on/off on-the-fly JECs (value1 0: off, 1: on)
 useJECs                                   1            -             -            -             -1
-useWideJets                                   1            -             -            -             -1
+useWideJets                               0            -             -            -             -1
 # turn on/off the removal of JEC
 noJECs                                    0            -             -            -             -1
 # turn on/off shift JECs (value1 0: off, 1: on, value2: sign of the shifting. The value is taken from a txt file with JEC uncertainties)
-shiftJECs                                 0            -            -            -             -1
+shiftJECs                                 0            -             -            -             -1
 # turn on/off FastJet clustering of wide jets (0: off, 1: on)
 useFastJet                                1            -             -            -             -1
 # clustering algorithm used for wide jets (CambridgeAachen, Kt, AntiKt)
 jetAlgo                                   AntiKt       -             -            -             -1
+# save/don't save whole ntuple
+saveNtuple                                -1            -            -            -             -1
+#
+isMC                                      1            -             -            -             -1
 #
 #
 #--------------------------------- Cuts (level 0,1,2,3 ... n) below --------------------------------------------
@@ -58,44 +62,44 @@ jetAlgo                                   AntiKt       -             -          
 # The level of the cut (0,1,2 ... n) is provided by the user and can be used in the code to easily determine if
 # groups of same-level cuts have passed or failed.
 #
-#VariableName                             minValue1(<) maxValue1(>=) minValue2(<) maxValue2(>=) level  histoNbinsMinMax OptionalFlag
-#------------ ------------ ------------- ------------ ------------- ----- ---------------- ------------
+#VariableName                             minValue1(<) maxValue1(>=) minValue2(<) maxValue2(>=) level  histoNbins       Min           Max    OptionalFlag
+#------------ ------------ ------------- ------------- ------------- ------------ ------------- ------ ---------------- ------------- ------ ------------
 PassJSON                                  -1           1             -            -             0      2                -0.5          1.5    SAVE
 nJet                                      1            +inf          -            -             1      31               -0.5          30.5   SAVE
 jet1_pt                                   20           +inf          -            -             1      500              0             5000   SAVE
-jet1_eta                                  -4.0         4.0           -            -             1      50               0                0    SAVE
-jet1_idtight                                0.5          1.5           -            -             1      2                0             2.     SAVE
+jet1_eta                                  -4.0         4.0           -            -             1      50               0             0      SAVE
+jet1_idtight                              0.5          1.5           -            -             1      2                0             2.     SAVE
 jet2_pt                                   20           +inf          -            -             1      500              0             5000   SAVE
-jet2_eta                                  -4.0         4.0           -            -             1      50               0                0    SAVE
-jet2_idtight                                0.5          1.5           -            -             1      2                0             2.     SAVE
-dijet_mass                                       -inf         +inf          -            -             1      10000            0             10000  SAVE
+jet2_eta                                  -4.0         4.0           -            -             1      50               0             0      SAVE
+jet2_idtight                              0.5          1.5           -            -             1      2                0             2.     SAVE
+dijet_mass                                -inf         +inf          -            -             1      10000            0             10000  SAVE
 # no cut on these variables, just want to save histograms and variables
-jet2_corr                              -inf         +inf          -            -             1      90               0             3      SAVE
-jet2_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet2_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet1_corr                              -inf         +inf          -            -             1      90               0             3      SAVE
+jet2_corr                                 -inf         +inf          -            -             1      90               0             3      SAVE
+jet2_phi                                  -inf         +inf          -            -             1      200              0             1000   SAVE
+jet2_mass                                 -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1_corr                                 -inf         +inf          -            -             1      90               0             3      SAVE
 nVtx                                      -inf         +inf          -            -             1      -2               0             50     SAVE
-jet1_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet1_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1_phi                                  -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1_mass                                 -inf         +inf          -            -             1      200              0             1000   SAVE
 dijet_deta                                -inf         +inf          -            -             1      100              0.            3.     SAVE
 dijet_dphi                                -inf         +inf          -            -             1      100              0.            3.     SAVE
-dijet_dr                                -inf         +inf          -            -             1      100              0.            3.     SAVE
-dijet_pt                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
-dijet_eta                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
-dijet_phi                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
+dijet_dr                                  -inf         +inf          -            -             1      100              0.            3.     SAVE
+dijet_pt                                  -inf         +inf          -            -             1      10000            0             10000  SAVE
+dijet_eta                                 -inf         +inf          -            -             1      10000            0             10000  SAVE
+dijet_phi                                 -inf         +inf          -            -             1      10000            0             10000  SAVE
 isr_pt                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-isr_eta                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-isr_phi                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-isr_mass                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-isr_corr                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-isr_idtight                                    -inf         +inf          -            -             1      10000            0             10000  SAVE
-trijet_deta                                -inf         +inf          -            -             1      100              0.            3.     SAVE
-trijet_dphi                                -inf         +inf          -            -             1      100              0.            3.     SAVE
-trijet_dr                                -inf         +inf          -            -             1      100              0.            3.     SAVE
-trijet_mass                                       -inf         +inf          -            -             1      10000            0             10000  SAVE
-trijet_pt                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
-trijet_eta                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
-trijet_phi                                      -inf         +inf          -            -             1      10000            0             10000  SAVE
+isr_eta                                   -inf         +inf          -            -             1      10000            0             10000  SAVE
+isr_phi                                   -inf         +inf          -            -             1      10000            0             10000  SAVE
+isr_mass                                  -inf         +inf          -            -             1      10000            0             10000  SAVE
+isr_corr                                  -inf         +inf          -            -             1      10000            0             10000  SAVE
+isr_idtight                               -inf         +inf          -            -             1      10000            0             10000  SAVE
+trijet_deta                               -inf         +inf          -            -             1      100              0.            3.     SAVE
+trijet_dphi                               -inf         +inf          -            -             1      100              0.            3.     SAVE
+trijet_dr                                 -inf         +inf          -            -             1      100              0.            3.     SAVE
+trijet_mass                               -inf         +inf          -            -             1      10000            0             10000  SAVE
+trijet_pt                                 -inf         +inf          -            -             1      10000            0             10000  SAVE
+trijet_eta                                -inf         +inf          -            -             1      10000            0             10000  SAVE
+trijet_phi                                -inf         +inf          -            -             1      10000            0             10000  SAVE
 isData                                    -inf         +inf          -            -             1      2                0             2.     SAVE
 run                                       -inf         +inf          -            -             1      50               0             100000 SAVE
 event                                     -inf         +inf          -            -             1      50               0             100000 SAVE
@@ -112,29 +116,29 @@ addHT                                     -inf         +inf          -          
 mhtAK4Sig                                 -inf         +inf          -            -             1      100              0             2      SAVE
 met                                       -inf         +inf          -            -             1      500              0             5000   SAVE
 Nak4                                      -inf         +inf          -            -             1      100              0             100    SAVE
-HLT_CaloJet40_CaloScouting_PFScouting -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_L1HTT_CaloScouting_PFScouting     -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_CaloScoutingHT250                 -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFScoutingHT450                   -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFHT900                           -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFHT800                           -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFHT650MJJ950                     -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFHT650MJJ900                     -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFJET500                          -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_PFJET450                          -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_Mu45Eta2p1                        -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_AK8PFHT700TriMass50               -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_AK8PFJet360TrimMass50             -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_CaloJet500NoJetID                 -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_ZeroBias_PFScouting               -inf         +inf          -            -             1      2                0             2.     SAVE
-HLT_ZeroBias_BTagScouting             -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT200                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT240                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT270                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT280                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT300                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_HTT320                            -inf         +inf          -            -             1      2                0             2.     SAVE
-L1_ZeroBias                          -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_CaloJet40_CaloScouting_PFScouting     -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_L1HTT_CaloScouting_PFScouting         -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_CaloScoutingHT250                     -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFScoutingHT450                       -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFHT900                               -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFHT800                               -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFHT650MJJ950                         -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFHT650MJJ900                         -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFJET500                              -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_PFJET450                              -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_Mu45Eta2p1                            -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_AK8PFHT700TriMass50                   -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_AK8PFJet360TrimMass50                 -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_CaloJet500NoJetID                     -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_ZeroBias_PFScouting                   -inf         +inf          -            -             1      2                0             2.     SAVE
+HLT_ZeroBias_BTagScouting                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT200                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT240                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT270                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT280                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT300                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_HTT320                                 -inf         +inf          -            -             1      2                0             2.     SAVE
+L1_ZeroBias                               -inf         +inf          -            -             1      2                0             2.     SAVE
 
 dijetMC_deta                              -inf         +inf          -            -             1      100              0             100    SAVE
 dijetMC_dphi                              -inf         +inf          -            -             1      100              0             100    SAVE
@@ -143,97 +147,113 @@ dijetMC_mass                              -inf         +inf          -          
 dijetMC_pt                                -inf         +inf          -            -             1      100              0             100    SAVE
 dijetMC_eta                               -inf         +inf          -            -             1      100              0             100    SAVE
 dijetMC_phi                               -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_deta                              -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_dphi                              -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_dr                                -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_mass                              -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_pt                                -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_eta                               -inf         +inf          -            -             1      100              0             100    SAVE
-dijetMCreco_phi                               -inf         +inf          -            -             1      100              0             100    SAVE
-jet1MC_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-jet1MC_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-jet1MC_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet1MC_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet2MC_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-jet2MC_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-jet2MC_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet2MC_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-isrMC_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-isrMC_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-isrMC_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-isrMC_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet1MCreco_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-jet1MCreco_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-jet1MCreco_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet1MCreco_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet2MCreco_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-jet2MCreco_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-jet2MCreco_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-jet2MCreco_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-isrMCreco_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
-isrMCreco_eta                                  -inf         +inf           -            -             1      50               0                0    SAVE
-isrMCreco_phi                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-isrMCreco_mass                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+dijetMCreco_deta                          -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_dphi                          -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_dr                            -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_mass                          -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_pt                            -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_eta                           -inf         +inf          -            -             1      100              0             100    SAVE
+dijetMCreco_phi                           -inf         +inf          -            -             1      100              0             100    SAVE
+jet1MC_pt                                 -inf         +inf          -            -             1      500              0             5000   SAVE
+jet1MC_eta                                -inf         +inf          -            -             1      50               0                0   SAVE
+jet1MC_phi                                -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1MC_mass                               -inf         +inf          -            -             1      200              0             1000   SAVE
+jet2MC_pt                                 -inf         +inf          -            -             1      500              0             5000   SAVE
+jet2MC_eta                                -inf         +inf          -            -             1      50               0                0   SAVE
+jet2MC_phi                                -inf         +inf          -            -             1      200              0             1000   SAVE
+jet2MC_mass                               -inf         +inf          -            -             1      200              0             1000   SAVE
+isrMC_pt                                  -inf         +inf          -            -             1      500              0             5000   SAVE
+isrMC_eta                                 -inf         +inf          -            -             1      50               0                0   SAVE
+isrMC_phi                                 -inf         +inf          -            -             1      200              0             1000   SAVE
+isrMC_mass                                -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1MCreco_pt                             -inf         +inf          -            -             1      500              0             5000   SAVE
+jet1MCreco_eta                            -inf         +inf          -            -             1      50               0                0   SAVE
+jet1MCreco_phi                            -inf         +inf          -            -             1      200              0             1000   SAVE
+jet1MCreco_mass                           -inf         +inf          -            -             1      200              0             1000   SAVE
+jet2MCreco_pt                             -inf         +inf          -            -             1      500              0             5000   SAVE
+jet2MCreco_eta                            -inf         +inf          -            -             1      50               0                0   SAVE
+jet2MCreco_phi                            -inf         +inf          -            -             1      200              0             1000   SAVE
+jet2MCreco_mass                           -inf         +inf          -            -             1      200              0             1000   SAVE
+isrMCreco_pt                              -inf         +inf          -            -             1      500              0             5000   SAVE
+isrMCreco_eta                             -inf         +inf          -            -             1      50               0                0   SAVE
+isrMCreco_phi                             -inf         +inf          -            -             1      200              0             1000   SAVE
+isrMCreco_mass                            -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_crossProduct                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct3D                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_jets12                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_jets02                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_jets01                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMC_deta                             -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMC_dphi                             -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMC_dr                               -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMC_mass                             -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMC_pt                               -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMC_eta                              -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMC_phi                              -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_dijetM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetMn                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPt                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPtMod                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetP                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPMod                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergy                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergyMod                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMCreco_deta                         -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMCreco_dphi                         -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMCreco_dr                           -inf         +inf          -            -             1      100              0             100    SAVE
+trijetMCreco_mass                         -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMCreco_pt                           -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMCreco_eta                          -inf         +inf          -            -             1      200              0             1000   SAVE
+trijetMCreco_phi                          -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_dijetM_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetMn_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPt_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPtMod_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetP_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPMod_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergy_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergyMod_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_crossProduct_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct3D_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_crossProduct                       -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct3D                       -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets12                             -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets02                             -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets01                             -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_dijetM_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetMn_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPt_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPtMod_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetP_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetPMod_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergy_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetEnergyMod_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_crossProduct_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct3D_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dotProduct_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetM                             -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetMn                            -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPt                            -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPtMod                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetP                             -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPMod                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergy                        -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergyMod                     -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_random_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_random                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetM_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetMn_CM                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPt_CM                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPtMod_CM                      -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetP_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPMod_CM                       -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergy_CM                     -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergyMod_CM                  -inf         +inf          -            -             1      200              0             1000   SAVE
+method_crossProduct_CM                    -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct3D_CM                    -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct_CM                      -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_jets12_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_jets02_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_jets01_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetM_CMz                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetMn_CMz                        -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPt_CMz                        -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPtMod_CMz                     -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetP_CMz                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetPMod_CMz                      -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergy_CMz                    -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetEnergyMod_CMz                 -inf         +inf          -            -             1      200              0             1000   SAVE
+method_crossProduct_CMz                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct3D_CMz                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dotProduct_CMz                     -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_dijetDPhi                                  -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetDPhi_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetDPhi_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_random_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_random                             -inf         +inf          -            -             1      200              0             1000   SAVE
 
-method_dijetDR                                  -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetDR_CM                                   -inf         +inf          -            -             1      200              0             1000   SAVE
-method_dijetDR_CMz                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets12_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets02_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_jets01_CM                          -inf         +inf          -            -             1      200              0             1000   SAVE
 
-mcReco_matching                                   -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetDPhi                          -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetDPhi_CM                       -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetDPhi_CMz                      -inf         +inf          -            -             1      200              0             1000   SAVE
 
-ptHat                                       -inf         +inf          -            -             1      500              0             5000   SAVE
-trueVtx                                       -inf         +inf          -            -             1      500              0             5000   SAVE
-processID                                       -inf         +inf          -            -             1      500              0             5000   SAVE
+method_dijetDR                            -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetDR_CM                         -inf         +inf          -            -             1      200              0             1000   SAVE
+method_dijetDR_CMz                        -inf         +inf          -            -             1      200              0             1000   SAVE
+
+mcReco_matching                           -inf         +inf          -            -             1      200              0             1000   SAVE
+
+ptHat                                     -inf         +inf          -            -             1      500              0             5000   SAVE
+trueVtx                                   -inf         +inf          -            -             1      500              0             5000   SAVE
+processID                                 -inf         +inf          -            -             1      500              0             5000   SAVE
 rho                                       -inf         +inf          -            -             1      500              0             5000   SAVE
-weight                                       -inf         +inf          -            -             1      500              0             5000   SAVE
+weight                                    -inf         +inf          -            -             1      500              0             5000   SAVE

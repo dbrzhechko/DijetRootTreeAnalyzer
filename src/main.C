@@ -40,10 +40,11 @@ int main(int argc, char* argv[])
   string * treeName       = new  string(argv[3]);
   string * outputFileName = new  string(argv[4]);
   string * cutEfficFile   = new  string(argv[5]);
-  //string * store_ntuple_string   = new  string(argv[6]);
-  bool store_ntuple = false;
+  //string * store_ntuple   = new  string(argv[6]);
+  
+  //bool store_ntuple = true;
 
-  analysisClass analysisClass_(inputList, cutFile, treeName, outputFileName, cutEfficFile, store_ntuple);
+  analysisClass analysisClass_(inputList, cutFile, treeName, outputFileName, cutEfficFile);
   analysisClass_.Loop();
 
 }

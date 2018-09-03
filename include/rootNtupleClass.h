@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Jun 18 15:54:36 2018 by ROOT version 6.06/01
+// Mon Sep  3 16:19:26 2018 by ROOT version 6.06/01
 // from TChain dijetscouting/events/
 //////////////////////////////////////////////////////////
 
@@ -34,6 +34,10 @@ public :
    const Int_t kMaxnVtx = 1;
    const Int_t kMaxrho = 1;
    const Int_t kMaxmet = 1;
+   const Int_t kMaxmetSig = 1;
+   const Int_t kMaxmetSigreco = 1;
+   const Int_t kMaxoffMet = 1;
+   const Int_t kMaxoffMetSig = 1;
    const Int_t kMaxmhtAK4 = 1;
    const Int_t kMaxmhtAK4Sig = 1;
    const Int_t kMaxnJetsAK4 = 1;
@@ -41,6 +45,10 @@ public :
    const Int_t kMaxmjjAK4 = 1;
    const Int_t kMaxdEtajjAK4 = 1;
    const Int_t kMaxdPhijjAK4 = 1;
+   const Int_t kMaxptHat = 1;
+   const Int_t kMaxprocessID = 1;
+   const Int_t kMaxweight = 1;
+   const Int_t kMaxnGenJetsAK4 = 1;
 
    // Declaration of leaf types
    Int_t           isData;
@@ -50,8 +58,28 @@ public :
    Int_t           nvtx;
    Float_t         rho;
    Float_t         met;
+   Float_t         metSig;
+   Float_t         metSigreco;
+   Float_t         offMet;
+   Float_t         offMetSig;
    Float_t         mhtAK4;
    Float_t         mhtAK4Sig;
+   vector<float>   *gen_eta;
+   vector<float>   *gen_phi;
+   vector<float>   *gen_p;
+   vector<float>   *gen_px;
+   vector<float>   *gen_py;
+   vector<float>   *gen_pz;
+   vector<float>   *gen_pt;
+   vector<float>   *gen_energy;
+   vector<int>     *gen_pdgId;
+   vector<float>   *gen_vx;
+   vector<float>   *gen_vy;
+   vector<float>   *gen_vz;
+   vector<int>     *gen_numDaught;
+   vector<int>     *gen_status;
+   vector<int>     *gen_index;
+   vector<int>     *gen_motherIndex;
    Int_t           nJetsAK4;
    Float_t         htAK4;
    Float_t         mjjAK4;
@@ -65,13 +93,36 @@ public :
    vector<float>   *jetEnergyAK4;
    vector<float>   *jetAreaAK4;
    vector<float>   *jetCSVAK4;
-   vector<float>   *jetHadfAK4;
-   vector<float>   *jetEmfAK4;
+   vector<float>   *jetChfAK4;
+   vector<float>   *jetNhfAK4;
+   vector<float>   *jetPhfAK4;
+   vector<float>   *jetMufAK4;
+   vector<float>   *jetElfAK4;
+   vector<float>   *jetNemfAK4;
+   vector<float>   *jetCemfAK4;
    vector<float>   *jetHf_hfAK4;
    vector<float>   *jetHf_emfAK4;
-   vector<int>     *idAK4;
+   vector<float>   *jetHofAK4;
+   vector<int>     *idLAK4;
+   vector<int>     *idTAK4;
+   vector<int>     *chHadMultAK4;
+   vector<int>     *chMultAK4;
+   vector<int>     *neHadMultAK4;
+   vector<int>     *neMultAK4;
+   vector<int>     *phoMultAK4;
    vector<bool>    *triggerResult;
-   vector<bool>    *l1Result;
+   vector<float>   *npu;
+   vector<int>     *PileupInteractions;
+   vector<int>     *PileupOriginBX;
+   Float_t         ptHat;
+   Int_t           processID;
+   Float_t         weight;
+   Int_t           nGenJetsAK4;
+   vector<float>   *jetPtGenAK4;
+   vector<float>   *jetEtaGenAK4;
+   vector<float>   *jetPhiGenAK4;
+   vector<float>   *jetMassGenAK4;
+   vector<float>   *jetEnergyGenAK4;
 
    // List of branches
    TBranch        *b_isData_;   //!
@@ -81,8 +132,28 @@ public :
    TBranch        *b_nVtx_;   //!
    TBranch        *b_rho_;   //!
    TBranch        *b_met_;   //!
+   TBranch        *b_metSig_;   //!
+   TBranch        *b_metSigreco_;   //!
+   TBranch        *b_offMet_;   //!
+   TBranch        *b_offMetSig_;   //!
    TBranch        *b_mhtAK4_;   //!
    TBranch        *b_mhtAK4Sig_;   //!
+   TBranch        *b_gen_eta;   //!
+   TBranch        *b_gen_phi;   //!
+   TBranch        *b_gen_p;   //!
+   TBranch        *b_gen_px;   //!
+   TBranch        *b_gen_py;   //!
+   TBranch        *b_gen_pz;   //!
+   TBranch        *b_gen_pt;   //!
+   TBranch        *b_gen_energy;   //!
+   TBranch        *b_gen_pdgId;   //!
+   TBranch        *b_gen_vx;   //!
+   TBranch        *b_gen_vy;   //!
+   TBranch        *b_gen_vz;   //!
+   TBranch        *b_gen_numDaught;   //!
+   TBranch        *b_gen_status;   //!
+   TBranch        *b_gen_index;   //!
+   TBranch        *b_gen_motherIndex;   //!
    TBranch        *b_nJetsAK4_;   //!
    TBranch        *b_htAK4_;   //!
    TBranch        *b_mjjAK4_;   //!
@@ -96,13 +167,36 @@ public :
    TBranch        *b_jetEnergyAK4;   //!
    TBranch        *b_jetAreaAK4;   //!
    TBranch        *b_jetCSVAK4;   //!
-   TBranch        *b_jetHadfAK4;   //!
-   TBranch        *b_jetEmfAK4;   //!
+   TBranch        *b_jetChfAK4;   //!
+   TBranch        *b_jetNhfAK4;   //!
+   TBranch        *b_jetPhfAK4;   //!
+   TBranch        *b_jetMufAK4;   //!
+   TBranch        *b_jetElfAK4;   //!
+   TBranch        *b_jetNemfAK4;   //!
+   TBranch        *b_jetCemfAK4;   //!
    TBranch        *b_jetHf_hfAK4;   //!
    TBranch        *b_jetHf_emfAK4;   //!
-   TBranch        *b_idAK4;   //!
+   TBranch        *b_jetHofAK4;   //!
+   TBranch        *b_idLAK4;   //!
+   TBranch        *b_idTAK4;   //!
+   TBranch        *b_chHadMultAK4;   //!
+   TBranch        *b_chMultAK4;   //!
+   TBranch        *b_neHadMultAK4;   //!
+   TBranch        *b_neMultAK4;   //!
+   TBranch        *b_phoMultAK4;   //!
    TBranch        *b_triggerResult;   //!
-   TBranch        *b_l1Result;   //!
+   TBranch        *b_npu;   //!
+   TBranch        *b_PileupInteractions;   //!
+   TBranch        *b_PileupOriginBX;   //!
+   TBranch        *b_ptHat_;   //!
+   TBranch        *b_processID_;   //!
+   TBranch        *b_weight_;   //!
+   TBranch        *b_nGenJetsAK4_;   //!
+   TBranch        *b_jetPtGenAK4;   //!
+   TBranch        *b_jetEtaGenAK4;   //!
+   TBranch        *b_jetPhiGenAK4;   //!
+   TBranch        *b_jetMassGenAK4;   //!
+   TBranch        *b_jetEnergyGenAK4;   //!
 
    rootNtupleClass(TTree *tree=0);
    virtual ~rootNtupleClass();
@@ -138,7 +232,7 @@ rootNtupleClass::rootNtupleClass(TTree *tree) : fChain(0)
       // The following code should be used if you want this class to access a chain
       // of trees.
       TChain * chain = new TChain("dijetscouting/events","");
-      chain->Add("ScoutingCaloHT__Run2016H-v1__RAW_2055.root/dijetscouting/events");
+      chain->Add("root://storage01.lcg.cscs.ch/pnfs/lcg.cscs.ch/cms/trivcat/store/user/sdonato/VectorDiJet1Jet_1000_13TeV-madgraph/VectorDiJet1Jet_1000_13TeV-madgraph_V2/171216_121003/0000/dijetscouting_bigtree_1.root/dijetscouting/events");
       tree = chain;
 #endif // SINGLE_TREE
 
@@ -182,6 +276,22 @@ void rootNtupleClass::Init(TTree *tree)
    // (once per file to be processed).
 
    // Set object pointer
+   gen_eta = 0;
+   gen_phi = 0;
+   gen_p = 0;
+   gen_px = 0;
+   gen_py = 0;
+   gen_pz = 0;
+   gen_pt = 0;
+   gen_energy = 0;
+   gen_pdgId = 0;
+   gen_vx = 0;
+   gen_vy = 0;
+   gen_vz = 0;
+   gen_numDaught = 0;
+   gen_status = 0;
+   gen_index = 0;
+   gen_motherIndex = 0;
    jetPtAK4 = 0;
    jetJecAK4 = 0;
    jetEtaAK4 = 0;
@@ -190,13 +300,32 @@ void rootNtupleClass::Init(TTree *tree)
    jetEnergyAK4 = 0;
    jetAreaAK4 = 0;
    jetCSVAK4 = 0;
-   jetHadfAK4 = 0;
-   jetEmfAK4 = 0;
+   jetChfAK4 = 0;
+   jetNhfAK4 = 0;
+   jetPhfAK4 = 0;
+   jetMufAK4 = 0;
+   jetElfAK4 = 0;
+   jetNemfAK4 = 0;
+   jetCemfAK4 = 0;
    jetHf_hfAK4 = 0;
    jetHf_emfAK4 = 0;
-   idAK4 = 0;
+   jetHofAK4 = 0;
+   idLAK4 = 0;
+   idTAK4 = 0;
+   chHadMultAK4 = 0;
+   chMultAK4 = 0;
+   neHadMultAK4 = 0;
+   neMultAK4 = 0;
+   phoMultAK4 = 0;
    triggerResult = 0;
-   l1Result = 0;
+   npu = 0;
+   PileupInteractions = 0;
+   PileupOriginBX = 0;
+   jetPtGenAK4 = 0;
+   jetEtaGenAK4 = 0;
+   jetPhiGenAK4 = 0;
+   jetMassGenAK4 = 0;
+   jetEnergyGenAK4 = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -210,8 +339,28 @@ void rootNtupleClass::Init(TTree *tree)
    fChain->SetBranchAddress("nvtx", &nvtx, &b_nVtx_);
    fChain->SetBranchAddress("rho", &rho, &b_rho_);
    fChain->SetBranchAddress("met", &met, &b_met_);
+   fChain->SetBranchAddress("metSig", &metSig, &b_metSig_);
+   fChain->SetBranchAddress("metSigreco", &metSigreco, &b_metSigreco_);
+   fChain->SetBranchAddress("offMet", &offMet, &b_offMet_);
+   fChain->SetBranchAddress("offMetSig", &offMetSig, &b_offMetSig_);
    fChain->SetBranchAddress("mhtAK4", &mhtAK4, &b_mhtAK4_);
    fChain->SetBranchAddress("mhtAK4Sig", &mhtAK4Sig, &b_mhtAK4Sig_);
+   fChain->SetBranchAddress("gen_eta", &gen_eta, &b_gen_eta);
+   fChain->SetBranchAddress("gen_phi", &gen_phi, &b_gen_phi);
+   fChain->SetBranchAddress("gen_p", &gen_p, &b_gen_p);
+   fChain->SetBranchAddress("gen_px", &gen_px, &b_gen_px);
+   fChain->SetBranchAddress("gen_py", &gen_py, &b_gen_py);
+   fChain->SetBranchAddress("gen_pz", &gen_pz, &b_gen_pz);
+   fChain->SetBranchAddress("gen_pt", &gen_pt, &b_gen_pt);
+   fChain->SetBranchAddress("gen_energy", &gen_energy, &b_gen_energy);
+   fChain->SetBranchAddress("gen_pdgId", &gen_pdgId, &b_gen_pdgId);
+   fChain->SetBranchAddress("gen_vx", &gen_vx, &b_gen_vx);
+   fChain->SetBranchAddress("gen_vy", &gen_vy, &b_gen_vy);
+   fChain->SetBranchAddress("gen_vz", &gen_vz, &b_gen_vz);
+   fChain->SetBranchAddress("gen_numDaught", &gen_numDaught, &b_gen_numDaught);
+   fChain->SetBranchAddress("gen_status", &gen_status, &b_gen_status);
+   fChain->SetBranchAddress("gen_index", &gen_index, &b_gen_index);
+   fChain->SetBranchAddress("gen_motherIndex", &gen_motherIndex, &b_gen_motherIndex);
    fChain->SetBranchAddress("nJetsAK4", &nJetsAK4, &b_nJetsAK4_);
    fChain->SetBranchAddress("htAK4", &htAK4, &b_htAK4_);
    fChain->SetBranchAddress("mjjAK4", &mjjAK4, &b_mjjAK4_);
@@ -225,13 +374,36 @@ void rootNtupleClass::Init(TTree *tree)
    fChain->SetBranchAddress("jetEnergyAK4", &jetEnergyAK4, &b_jetEnergyAK4);
    fChain->SetBranchAddress("jetAreaAK4", &jetAreaAK4, &b_jetAreaAK4);
    fChain->SetBranchAddress("jetCSVAK4", &jetCSVAK4, &b_jetCSVAK4);
-   fChain->SetBranchAddress("jetHadfAK4", &jetHadfAK4, &b_jetHadfAK4);
-   fChain->SetBranchAddress("jetEmfAK4", &jetEmfAK4, &b_jetEmfAK4);
+   fChain->SetBranchAddress("jetChfAK4", &jetChfAK4, &b_jetChfAK4);
+   fChain->SetBranchAddress("jetNhfAK4", &jetNhfAK4, &b_jetNhfAK4);
+   fChain->SetBranchAddress("jetPhfAK4", &jetPhfAK4, &b_jetPhfAK4);
+   fChain->SetBranchAddress("jetMufAK4", &jetMufAK4, &b_jetMufAK4);
+   fChain->SetBranchAddress("jetElfAK4", &jetElfAK4, &b_jetElfAK4);
+   fChain->SetBranchAddress("jetNemfAK4", &jetNemfAK4, &b_jetNemfAK4);
+   fChain->SetBranchAddress("jetCemfAK4", &jetCemfAK4, &b_jetCemfAK4);
    fChain->SetBranchAddress("jetHf_hfAK4", &jetHf_hfAK4, &b_jetHf_hfAK4);
    fChain->SetBranchAddress("jetHf_emfAK4", &jetHf_emfAK4, &b_jetHf_emfAK4);
-   fChain->SetBranchAddress("idAK4", &idAK4, &b_idAK4);
+   fChain->SetBranchAddress("jetHofAK4", &jetHofAK4, &b_jetHofAK4);
+   fChain->SetBranchAddress("idLAK4", &idLAK4, &b_idLAK4);
+   fChain->SetBranchAddress("idTAK4", &idTAK4, &b_idTAK4);
+   fChain->SetBranchAddress("chHadMultAK4", &chHadMultAK4, &b_chHadMultAK4);
+   fChain->SetBranchAddress("chMultAK4", &chMultAK4, &b_chMultAK4);
+   fChain->SetBranchAddress("neHadMultAK4", &neHadMultAK4, &b_neHadMultAK4);
+   fChain->SetBranchAddress("neMultAK4", &neMultAK4, &b_neMultAK4);
+   fChain->SetBranchAddress("phoMultAK4", &phoMultAK4, &b_phoMultAK4);
    fChain->SetBranchAddress("triggerResult", &triggerResult, &b_triggerResult);
-   fChain->SetBranchAddress("l1Result", &l1Result, &b_l1Result);
+   fChain->SetBranchAddress("npu", &npu, &b_npu);
+   fChain->SetBranchAddress("PileupInteractions", &PileupInteractions, &b_PileupInteractions);
+   fChain->SetBranchAddress("PileupOriginBX", &PileupOriginBX, &b_PileupOriginBX);
+   fChain->SetBranchAddress("ptHat", &ptHat, &b_ptHat_);
+   fChain->SetBranchAddress("processID", &processID, &b_processID_);
+   fChain->SetBranchAddress("weight", &weight, &b_weight_);
+   fChain->SetBranchAddress("nGenJetsAK4", &nGenJetsAK4, &b_nGenJetsAK4_);
+   fChain->SetBranchAddress("jetPtGenAK4", &jetPtGenAK4, &b_jetPtGenAK4);
+   fChain->SetBranchAddress("jetEtaGenAK4", &jetEtaGenAK4, &b_jetEtaGenAK4);
+   fChain->SetBranchAddress("jetPhiGenAK4", &jetPhiGenAK4, &b_jetPhiGenAK4);
+   fChain->SetBranchAddress("jetMassGenAK4", &jetMassGenAK4, &b_jetMassGenAK4);
+   fChain->SetBranchAddress("jetEnergyGenAK4", &jetEnergyGenAK4, &b_jetEnergyGenAK4);
    Notify();
 }
 

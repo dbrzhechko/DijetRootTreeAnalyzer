@@ -14,7 +14,7 @@ JSON /mnt/t3nfs01/data01/shome/sdonato/scouting/CMSSW_8_0_30/src/CMSDIJET/DijetR
 #
 #VariableName                             value1       value2        value3       value4        level
 #------------ ------------ ------------- ------------ ------------- -----
-maxEvents                                 -1           -             -            -             -1    
+maxEvents                                 -1           -             -            -             -1
 skimHLT_CaloJet40_CaloScouting_PFScouting -1           -             -            -             -1
 skimHLT_L1HTT_CaloScouting_PFScouting     -1           -             -            -             -1
 skimHLT_CaloScoutingHT250                 +1           -             -            -             -1
@@ -32,7 +32,7 @@ hadFraction                               0.95         -             -          
 emFraction                                0.95         -             -            -             -1
 # turn on/off on-the-fly JECs (value1 0: off, 1: on)
 useJECs                                   1            -             -            -             -1
-useWideJets                                   1            -             -            -             -1
+useWideJets                               1            -             -            -             -1
 # turn on/off the removal of JEC
 noJECs                                    0            -             -            -             -1
 # turn on/off shift JECs (value1 0: off, 1: on, value2: sign of the shifting. The value is taken from a txt file with JEC uncertainties)
@@ -41,7 +41,10 @@ shiftJECs                                 0            -1            -          
 useFastJet                                1            -             -            -             -1
 # clustering algorithm used for wide jets (CambridgeAachen, Kt, AntiKt)
 jetAlgo                                   AntiKt       -             -            -             -1
+# save/don't save whole ntuple
+saveNtuple                                -1           -             -            -             -1
 #
+isMC                                      1            -             -            -             -1
 #
 #--------------------------------- Cuts (level 0,1,2,3 ... n) below --------------------------------------------
 # The cut variable names, cut boundaries and histogram binnings are provided here by the user.

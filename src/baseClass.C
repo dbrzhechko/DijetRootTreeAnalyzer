@@ -13,7 +13,8 @@ string histoCountNstart2 = "dijetscouting/TriggerPass";
 string histoCountNstart3 = "DijetFilter/EventCount/EventCounter"; //when running on a reduced skim
 //=========================
 
-baseClass::baseClass(string * inputList, string * cutFile, string * treeName, string * outputFileName, string * cutEfficFile, bool store_ntuple):
+// baseClass::baseClass(string * inputList, string * cutFile, string * treeName, string * outputFileName, string * cutEfficFile, bool store_ntuple):
+baseClass::baseClass(string * inputList, string * cutFile, string * treeName, string * outputFileName, string * cutEfficFile):
   PileupWeight_ ( 1.0 ),
   fillSkim_                         ( true ) ,
   fillAllPreviousCuts_              ( true ) ,
@@ -30,7 +31,7 @@ baseClass::baseClass(string * inputList, string * cutFile, string * treeName, st
   treeName_= treeName;
   outputFileName_ = outputFileName;
   cutEfficFile_ = cutEfficFile;
-  store_ntuple_ = store_ntuple;
+  // store_ntuple_ = store_ntuple;
   init();
   //STDOUT("ends");
 }
@@ -1585,11 +1586,13 @@ bool baseClass::writeSkimTree()
 
 bool baseClass::writeReducedSkimTree()
 {
+  bool store_ntuple = abs(getPreCutValue1("saveNtuple")) == 1;
+  bool store_histogram = getPreCutValue1("saveNtuple") != -1;
   bool ret = true;
 
   if(!produceReducedSkim_) return ret;
 
-  if (store_ntuple_) {
+  if (store_ntuple) {
     reduced_skim_file_->cd();
     reduced_skim_file_->mkdir("rootTupleTree");
     reduced_skim_file_->cd("rootTupleTree");
@@ -1607,23 +1610,28 @@ bool baseClass::writeReducedSkimTree()
   hReducedCount_->SetBinContent(3,NAfterReducedSkim_);
   hReducedCount_->Write();
   reduced_skim_file_->cd();
-  TDirectory *dir4 = dir1->mkdir("dijetMassHisto");
-  reduced_skim_file_->cd("DijetFilter/dijetMassHisto");
-  // dijetMassHisto->Write();
-  dijetMassHisto_40_50->Write();
-  dijetMassHisto_50_60->Write();
-  dijetMassHisto_60_70->Write();
-  dijetMassHisto_70_80->Write();
-  dijetMassHisto_80_90->Write();
-  dijetMassHisto_90_100->Write();
-  dijetMassHisto_100_150->Write();
-  dijetMassHisto_150_200->Write();
-  dijetMassHisto_200_300->Write();
-  dijetMassHisto_300->Write();
-  dijetMassHisto_50->Write();
-  dijetMassHisto_50_HT_270->Write();
-  dijetMassHisto_50_L1_HTT240_L1_HTT270->Write();
-  // Any failure mode to implement?
+
+  if (store_histogram) {
+    TDirectory *dir4 = dir1->mkdir("dijetMassHisto");
+    reduced_skim_file_->cd("DijetFilter/dijetMassHisto");
+    // dijetMassHisto->Write();
+    dijetMassHisto_40_50->Write();
+    dijetMassHisto_50_60->Write();
+    dijetMassHisto_60_70->Write();
+    dijetMassHisto_70_80->Write();
+    dijetMassHisto_80_90->Write();
+    dijetMassHisto_90_100->Write();
+    dijetMassHisto_100_150->Write();
+    dijetMassHisto_150_200->Write();
+    dijetMassHisto_200_300->Write();
+    dijetMassHisto_300->Write();
+    dijetMassHisto_50->Write();
+    dijetMassHisto_50_HT_270->Write();
+    dijetMassHisto_50_L1_HTT240_L1_HTT270->Write();
+    // Any failure mode to implement?
+    reduced_skim_file_->cd();
+  }
+  
   return ret;
 }
 

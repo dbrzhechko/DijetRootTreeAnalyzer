@@ -194,7 +194,7 @@ class baseClass : public rootNtupleClass {
   double getHistoMin(const string& s);
   double getHistoMax(const string& s);
 
-  baseClass(string * inputList, string * cutFile, string * treeName, string *outputFileName=0, string * cutEfficFile=0, bool store_ntuple = true);
+  baseClass(string * inputList, string * cutFile, string * treeName, string *outputFileName=0, string * cutEfficFile=0);
   virtual ~baseClass();
 
   // Optimization stuff
@@ -217,7 +217,6 @@ class baseClass : public rootNtupleClass {
 
   TFile * output_root_;
 	TFile *reduced_skim_file_;
-	bool store_ntuple_;
   private :
   void getHltMap(char*);
 
