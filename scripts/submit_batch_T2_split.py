@@ -84,7 +84,7 @@ splittedDir = "splitted"+"_"+simpletimeMarker
 ##create a directory to store logfiles containing the "tag" in the name
 os.system("mkdir batch/"+newTag)
 os.system("mkdir "+opt.input+"/"+splittedDir)
-
+print "splittedDir", splittedDir
 ##loop over lists (one for datasets) to create splitted lists
 for line in  ins:
   lists_dataset = []
@@ -101,31 +101,36 @@ for line in  ins:
   jj=0  ##counter for num of jobs
   #open list
   list = open(opt.input+"/"+line,"r")
+  list = list.readlines()
+  nfiles = len(list)
+  print "nfiles = ", nfiles
   ## remove splitted lists if they already exist (necessary beacuse we append to txt file)
   os.system("rm "+opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"*.txt")
   for file in list:
     #print "file:%i  filesperjob:%i  job:%i op.modulo:%i  list %s " % (jf, opt.filesperjob,jj,(jf+1 % opt.filesperjob), opt.input+"/"+line)
     #print file
     modulo = int(jf+1) % int(opt.filesperjob)
-    #print "modulo = %i" % modulo
+    # print "modulo = %i" % modulo
     splittedlist = open(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt","a+")
     splittedlist.write(file)
-    if ( modulo == 0 ):
+    print int(jf), " == ", int(nfiles-1)
+    if modulo == 0 or int(jf) == int(nfiles-1):
       lists_dataset.append(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt")
       print "job "+str(jj)+"   appending "+opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt"
       jj += 1 #increment counter of jobs
     jf += 1   #increment counter of files
-  print "job "+str(jj)+"   appending "+opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt"
-  lists_dataset.append(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt")
+  # if jf % int(opt.filesperjob) != 0:
+  #   print "job "+str(jj)+"   appending "+opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt"
+  #   lists_dataset.append(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt")
+  #   jj+=1
   njobs_list.append(jj)
   inputlists.append(lists_dataset)
 
 print ""
-print njobs_list
+print "njobs_list = " , njobs_list
 print ""
-print inputlists
+print "inputlists = ", inputlists
 print "inputlists size = "+str(len(inputlists))
-
 i_f = 0
 ins = open("config/lists_to_run.txt", "r")
 for line in  ins:
@@ -135,7 +140,7 @@ for line in  ins:
   sample = sample.rstrip('\n')
   splittedlist = inputlists[i_f]
   print splittedlist
-  for jj in range(0,njobs_list[i_f]+1):
+  for jj in range(0,njobs_list[i_f]):
     logfile = "batch/"+newTag+"/logfile_"+sample+"_"+newTag+"_"+str(jj)+".log"
     print sample+"  job "+str(jj)
     #command = "./main "+splittedlist[jj]+" config/cutFile_mainDijetSelection.txt dijets/events "+opt.output+simpletimeMarker+"/rootfile_"+sample+"_"+newTag+"_"+str(jj)+" "+opt.output+simpletimeMarker+"/cutEfficiencyFile_"+sample+"_"+newTag+"_"+str(jj)
@@ -182,4 +187,3 @@ for line in  ins:
       if imc==0: os.system(command2)
       else: os.system(command2)
   i_f += 1
-
