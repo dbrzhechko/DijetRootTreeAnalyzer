@@ -9,18 +9,18 @@ import re
 
 gStyle.SetOptStat(0)
 default_dir = "output_20180418_163054"
-default_mass = "300,400,500,600"
+default_mass = "150,200,300,400,500,600,800,1000"
 usage = "usage: %prog [options]"
 parser = optparse.OptionParser(usage)
 
 parser.add_option("-d", "--directory", action="store", type="string", dest="dir", default=default_dir)
 parser.add_option("-m", "--mass", action="store", type="string", dest="mass", default=default_mass)
-# parser.add_option("-o", "--output", action="store", type="string", dest="output", default="histos.root")
+parser.add_option("", "--matching", action="store", type="string", dest="matching", default="")
 parser.add_option("-v", "--var", action="store", type="string", dest="var", default="dijet_mass")
 parser.add_option("-b", "--batch", action="store", type="string", dest="batch", default="True")
 (options, args) = parser.parse_args()
-selection = "isr_pt > 50 && jet2_pt>45  && abs(dijet_deta)<1.2 && jet1_pt>90"
-step = 50.
+#selection = "isr_pt > 70 && jet2_pt>70  && abs(dijet_deta)<1.1 && jet1_pt>70"
+step = 10.
 numberOfBins = 14000
 leftEdge = 0
 rightEdge = 14000
@@ -120,12 +120,16 @@ smearJerDownFunc.SetParameter(2,hltP0)
 smearJerDownFunc.SetParameter(3,hltP1)
 smearJerDownFunc.SetParameter(4,jerDown)
 
+matching = options.matching
+
+if matching is not "":
+    matching="_"+matching
 outputFileName = [  #"rootfile_list_VectorDiJet1JetNotRightOne.root",
-                    "rootfile_list_VectorDiJet1Jet.root",
-                    "rootfile_list_VectorDiJet1Jet_JERUP.root",
-                    "rootfile_list_VectorDiJet1Jet_JERDOWN.root",
-                    "rootfile_list_VectorDiJet1Jet_JESUP.root",
-                    "rootfile_list_VectorDiJet1Jet_JESDOWN.root"]
+                    "rootfile_list_VectorDiJet1Jet"+matching+".root",
+                    "rootfile_list_VectorDiJet1Jet_JERUP"+matching+".root",
+                    "rootfile_list_VectorDiJet1Jet_JERDOWN"+matching+".root",
+                    "rootfile_list_VectorDiJet1Jet_JESUP"+matching+".root",
+                    "rootfile_list_VectorDiJet1Jet_JESDOWN"+matching+".root"]
 # h_mjj_ratio_array = {}
 h_mjj_ratio_nom_array = {}
 h_mjj_ratio_jerUp_array = {}
@@ -149,7 +153,7 @@ def prob_mass(rootTree, var, outputFileName):
             dijet_mass  = tree.dijet_mass
             mjj         = dijet_mass
 
-            if isr_pt > 50 and jet2_pt>45  and abs(dijet_deta)<1.2 and jet1_pt>90:
+            if isr_pt > 70 and jet2_pt>70  and abs(dijet_deta)<1.1 and jet1_pt>70:
                 x1 = r.Gaus()
                 x2 = r.Gaus()
                 x3 = r.Gaus()
@@ -247,11 +251,16 @@ def mass_shapes(directory, mass, var, outputFileName):
     mass = re.split(",|, ", mass)
     for m in mass:
         rootTree[m] = TChain("rootTupleTree/tree")
+        print "Creating histogram with %s GeV mass"%m
         for file in pathlist:
             if ('rootfile_list_VectorDiJet1Jet_'+m) in file and 'reduced_skim.root' in file:
                 rootTree[m].Add(directory+"/"+file)
                 fileName = file
+                print "File %s added to %s GeV mass histogram"%(file, m)
     prob_mass(rootTree, var, outputFileName)
-
+    print "Files:"
+    for out in outputFileName:
+        print "\t"+out
+    print "were created!"
 
 mass_shapes(options.dir, options.mass, options.var, outputFileName)

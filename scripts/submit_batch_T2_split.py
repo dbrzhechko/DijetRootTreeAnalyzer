@@ -113,7 +113,7 @@ for line in  ins:
     # print "modulo = %i" % modulo
     splittedlist = open(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt","a+")
     splittedlist.write(file)
-    print int(jf), " == ", int(nfiles-1)
+    #print int(jf), " == ", int(nfiles-1)
     if modulo == 0 or int(jf) == int(nfiles-1):
       lists_dataset.append(opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt")
       print "job "+str(jj)+"   appending "+opt.input+"/"+splittedDir+"/"+sample+"_"+newTag+"_"+str(jj)+".txt"

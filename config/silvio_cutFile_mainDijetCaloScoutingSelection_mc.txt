@@ -1,4 +1,4 @@
-JSON /mnt/t3nfs01/data01/shome/sdonato/scouting/CMSSW_8_0_30/src/CMSDIJET/DijetRootTreeAnalyzer/Cert_271036-273450_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt
+JSON /mnt/t3nfs01/data01/shome/dbrzhech/DijetScouting/CMSSW_8_0_30/src/DijetRootTreeAnalyzer/Cert_271036-273450_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt
 #
 ############################# Example of file with list of cuts
 #
@@ -14,25 +14,25 @@ JSON /mnt/t3nfs01/data01/shome/sdonato/scouting/CMSSW_8_0_30/src/CMSDIJET/DijetR
 #
 #VariableName                             value1       value2        value3       value4        level
 #------------ ------------ -------------- ------------- ------------ ------------ ------------- ------
-maxEvents                                 10000        -             -            -             -1
+maxEvents                                 -1           -             -            -             -1
 skimHLT_CaloJet40_CaloScouting_PFScouting -1           -             -            -             -1
 skimHLT_L1HTT_CaloScouting_PFScouting     -1           -             -            -             -1
 skimHLT_CaloScoutingHT250                 -1           -             -            -             -1
 produceSkim                               0            -             -            -             -1
 produceReducedSkim                        1            -             -            -             -1
-jetFidRegion                              3.0          -             -            -             -1
+jetFidRegion                              2.5          -             -            -             -1
 tightJetID                                1            -             -            -             -1
 pt0Cut                                    20           -             -            -             -1
 pt1Cut                                    20           -             -            -             -1
-ptCut                                     40           -             -            -             -1
-ptCutHT                                   40           -             -            -             -1
+ptCut                                     30           -             -            -             -1
+ptCutHT                                   30           -             -            -             -1
 DeltaR                                    1.1          -             -            -             -1
 DetaJJforTrig                             999          -             -            -             -1
 hadFraction                               0.95         -             -            -             -1
 emFraction                                0.95         -             -            -             -1
 # turn on/off on-the-fly JECs (value1 0: off, 1: on)
 useJECs                                   1            -             -            -             -1
-useWideJets                               0            -             -            -             -1
+useWideJets                               1            -             -            -             -1
 # turn on/off the removal of JEC
 noJECs                                    0            -             -            -             -1
 # turn on/off shift JECs (value1 0: off, 1: on, value2: sign of the shifting. The value is taken from a txt file with JEC uncertainties)
@@ -41,10 +41,11 @@ shiftJECs                                 0            -             -          
 useFastJet                                1            -             -            -             -1
 # clustering algorithm used for wide jets (CambridgeAachen, Kt, AntiKt)
 jetAlgo                                   AntiKt       -             -            -             -1
-# save/don't save whole ntuple
+# save/don't save whole ntuple (value1 0: don't store ntuple and store histograms, 1: store ntuple and histograms, -1: store only ntuple and do not store histograms)
 saveNtuple                                -1            -            -            -             -1
-#
+# (doesn't work for now)
 isMC                                      1            -             -            -             -1
+SaveAllEvents                             0            -             -            -             -1
 #
 #
 #--------------------------------- Cuts (level 0,1,2,3 ... n) below --------------------------------------------
@@ -66,10 +67,10 @@ isMC                                      1            -             -          
 #------------ ------------ ------------- ------------- ------------- ------------ ------------- ------ ---------------- ------------- ------ ------------
 PassJSON                                  -1           1             -            -             0      2                -0.5          1.5    SAVE
 nJet                                      1            +inf          -            -             1      31               -0.5          30.5   SAVE
-jet1_pt                                   20           +inf          -            -             1      500              0             5000   SAVE
+jet1_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
 jet1_eta                                  -4.0         4.0           -            -             1      50               0             0      SAVE
 jet1_idtight                              0.5          1.5           -            -             1      2                0             2.     SAVE
-jet2_pt                                   20           +inf          -            -             1      500              0             5000   SAVE
+jet2_pt                                   -inf           +inf          -            -             1      500              0             5000   SAVE
 jet2_eta                                  -4.0         4.0           -            -             1      50               0             0      SAVE
 jet2_idtight                              0.5          1.5           -            -             1      2                0             2.     SAVE
 dijet_mass                                -inf         +inf          -            -             1      10000            0             10000  SAVE

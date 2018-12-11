@@ -1599,7 +1599,14 @@ bool baseClass::writeReducedSkimTree()
     reduced_skim_tree_->Write();
   }
   reduced_skim_file_->cd();
-  TDirectory *dir1 = reduced_skim_file_->mkdir("DijetFilter");
+  TDirectory *dir1;
+  // if(reduced_skim_file_->cd("DijetFilter") == 0){
+  //   cout << "passed: " << reduced_skim_file_->cd("DijetFilter") <<endl;
+    dir1 = reduced_skim_file_->mkdir("DijetFilter");
+  // }
+  // else{
+    // reduced_skim_file_->cd("DijetFilter");
+  // }
   TDirectory *dir2 = dir1->mkdir("EventCount");
   reduced_skim_file_->cd("DijetFilter/EventCount");
   int nEntRoottuple = fChain->GetEntriesFast();
@@ -1609,7 +1616,7 @@ bool baseClass::writeReducedSkimTree()
   hReducedCount_->SetBinContent(2,nEntRoottuple);
   hReducedCount_->SetBinContent(3,NAfterReducedSkim_);
   hReducedCount_->Write();
-  reduced_skim_file_->cd();
+  // reduced_skim_file_->cd();
 
   if (store_histogram) {
     TDirectory *dir4 = dir1->mkdir("dijetMassHisto");
@@ -1625,13 +1632,19 @@ bool baseClass::writeReducedSkimTree()
     dijetMassHisto_150_200->Write();
     dijetMassHisto_200_300->Write();
     dijetMassHisto_300->Write();
-    dijetMassHisto_50->Write();
-    dijetMassHisto_50_HT_270->Write();
-    dijetMassHisto_50_L1_HTT240_L1_HTT270->Write();
+    dijetMassHisto_70->Write();
+    dijetMassHisto_70_HT_270->Write();
+    dijetMassHisto_70_L1_HTT240_L1_HTT270->Write();
+    dijetMassHisto_L1_HTT_240_270_or->Write();
+    dijetMassHisto_L1_HTT_240_270_280_or->Write();
+    dijetMassHisto_L1_HTT_240_270_280_300_or->Write();
+    dijetMassHisto_L1_HTT_240_270_280_300_320_or->Write();
+    dijetMassHisto_70_L1_HTT240_L1_HTT320->Write();
+    dijetMassHisto_70_dijet_deta_unblind->Write();
     // Any failure mode to implement?
     reduced_skim_file_->cd();
   }
-  
+
   return ret;
 }
 

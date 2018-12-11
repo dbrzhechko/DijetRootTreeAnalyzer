@@ -9,8 +9,8 @@
 #include <TVector3.h>
 #include <TRandom3.h>
 
-#define isMC true
-// #define isMC false
+#define isMC false
+
 using namespace std;
 
 
@@ -227,6 +227,7 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
     std::cout << "analysisClass::analysisClass(): begins " << std::endl;
 
     std::string jetAlgo = getPreCutString1 ("jetAlgo");
+
     double rParam = getPreCutValue1 ("DeltaR");
 
     if (jetAlgo == "AntiKt")
@@ -280,7 +281,7 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
       //vPar.push_back (JetCorrectorParameters (L2Path));
       //vPar.push_back (JetCorrectorParameters (L3Path));
       //}
-
+      // define later as struct
       JetCorrector = new FactorizedJetCorrector (vPar);
 
       //uncertainty
@@ -326,9 +327,15 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
       dijetMassHisto_150_200  = new TH1F("dijetMassHisto_isrptcut_150_200", "Dijet Mass", 5000, 0, 5000);
       dijetMassHisto_200_300  = new TH1F("dijetMassHisto_isrptcut_200_300", "Dijet Mass", 5000, 0, 5000);
       dijetMassHisto_300      = new TH1F("dijetMassHisto_isrptcut_300",     "Dijet Mass", 5000, 0, 5000);
-      dijetMassHisto_50       = new TH1F("dijetMassHisto_isrptcut_50",      "Dijet Mass", 5000, 0, 5000);
-      dijetMassHisto_50_HT_270 = new TH1F("dijetMassHisto_isrptcut_50_HT_270", "Dijet Mass", 5000, 0, 5000);
-      dijetMassHisto_50_L1_HTT240_L1_HTT270 = new TH1F("dijetMassHisto_isrptcut_50_L1_HTT240_L1_HTT270", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_70       = new TH1F("dijetMassHisto_isrptcut_70",      "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_70_HT_270 = new TH1F("dijetMassHisto_isrptcut_70_HT_270", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_70_L1_HTT240_L1_HTT270 = new TH1F("dijetMassHisto_isrptcut_70_L1_HTT240_L1_HTT270", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_L1_HTT_240_270_or      = new TH1F("dijetMassHisto_L1_HTT_240_270_or", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_L1_HTT_240_270_280_or  = new TH1F("dijetMassHisto_L1_HTT_240_270_280_or", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_L1_HTT_240_270_280_300_or     = new TH1F("dijetMassHisto_L1_HTT_240_270_280_300_or", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_L1_HTT_240_270_280_300_320_or = new TH1F("dijetMassHisto_L1_HTT_240_270_280_300_320_or", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_70_L1_HTT240_L1_HTT320 = new TH1F("dijetMassHisto_70_L1_HTT240_L1_HTT320", "Dijet Mass", 5000, 0, 5000);
+      dijetMassHisto_70_dijet_deta_unblind  = new TH1F("dijetMassHisto_70_dijet_deta_unblind", "Dijet Mass", 5000, 0, 5000);
     }
     //////////book histos here
 
@@ -497,27 +504,51 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
       std::sort (goodjets.begin (), goodjets.end (), sortByPt);
       float corr1 = 1;
       float corr2 = 1;
+      float corr3 = 1;
+      std::pair<int,int> dijet_index[3] = {make_pair(1,2), make_pair(0,2), make_pair(0,1)};
+      int isr_index = 0;
       if (goodjets.size () >= 2) {
         //      std::pair < int, int >dijet_pair = find_dijet(goodjets, "dotProduct3D");
         //std::pair < int, int >dijet_pair = find_dijet (goodjets, "dijetM");
-        //std::pair < int, int >dijet_pair = find_dijet (goodjets, "jets01");
-        //int jet_isr = 0;
-        //while (jet_isr == dijet_pair.first || jet_isr == dijet_pair.second) {
-        //jet_isr++;
-        // }
-        //jet1 = goodjets.at (dijet_pair.first);
-        //jet2 = goodjets.at (dijet_pair.second);
-        //isr = goodjets.at (jet_isr);
         jet1 = goodjets.at (0);
         jet2 = goodjets.at (1);
+        if (goodjets.size () >= 3) {
+          std::pair < int, int >dijet_pair = find_dijet (goodjets, getPreCutString1("jetMatching"));
+          int jet_isr = 0;
+          while (jet_isr == dijet_pair.first || jet_isr == dijet_pair.second) {
+            jet_isr++;
+          }
+          jet1 = goodjets.at (dijet_pair.first);
+          jet2 = goodjets.at (dijet_pair.second);
+          isr = goodjets.at (jet_isr);
+          if (getPreCutValue1 ("useWideJets") == 1) {
+            corr3 = biasCorrection (isr.Pt ());
+            isr *= corr3;
+          }
+        }
         if (getPreCutValue1 ("useWideJets") == 1) {
           corr1 = biasCorrection (jet1.Pt ());
           corr2 = biasCorrection (jet2.Pt ());
           jet1 *= corr1;
           jet2 *= corr2;
         }
-        if (goodjets.size () >= 3)
-        isr = goodjets.at (2);
+        // if (goodjets.size () >= 3) {
+        //   //jet1 = goodjets.at (dijet_index[isr_index].first);
+        //   //jet2 = goodjets.at (dijet_index[isr_index].second);
+      	//   jet1 = goodjets.at(0);
+      	//   jet2 = goodjets.at(1);
+        //   if (getPreCutValue1 ("useWideJets") == 1) {
+        //     corr1 = biasCorrection (jet1.Pt ());
+        //     corr2 = biasCorrection (jet2.Pt ());
+        //     jet1 *= corr1;
+        //     jet2 *= corr2;
+        //   }
+        //   isr = goodjets.at(2);
+        //   if (getPreCutValue1 ("useWideJets") == 1) {
+        //     corr3 = biasCorrection (isr.Pt ());
+        //     isr *= corr3;
+        //   }
+        // }
       }
 
       jet1_mc.SetXYZT (0, 0, 0, 0);
@@ -944,7 +975,10 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
       cout << passedCut ("dijet_mass") << endl;
       */
       // optional call to fill a skim with a subset of the variables defined in the cutFile (use flag SAVE)
-      if (passedAllPreviousCuts ("dijet_mass") && passedCut ("dijet_mass")) {
+      if(getPreCutValue1("SaveAllEvents")){
+      	if(store_ntuple == true) fillReducedSkimTree ();
+      }
+      else if (passedAllPreviousCuts ("dijet_mass") && passedCut ("dijet_mass") && passedCut ("isr_pt") && passedCut ("dijet_deta") ) {
         if(store_ntuple == true) fillReducedSkimTree ();
 
         // ===== Take a look at this =====
@@ -957,11 +991,27 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
         // }
         if(!isMC){
           if(store_histogram){
-            if(getVariableValue("L1_HTT240") == 1 && getVariableValue("jet2_pt")>45  && abs(getVariableValue("dijet_deta"))<1.2 && getVariableValue("jet1_pt")>90 ){
-              if(getVariableValue("isr_pt") > 50) {
-                dijetMassHisto_50->Fill(getVariableValue("dijet_mass"));
-                if(getVariableValue("htAK4") > 270) dijetMassHisto_50_HT_270->Fill(getVariableValue("dijet_mass"));
-                if(getVariableValue("L1_HTT270") == 1) dijetMassHisto_50_L1_HTT240_L1_HTT270->Fill(getVariableValue("dijet_mass"));
+            if(getVariableValue("isr_pt") > 70 && getVariableValue("jet2_pt")>70  /*&& abs(getVariableValue("dijet_deta"))<1.1*/ && getVariableValue("jet1_pt")>70 ){
+              if(getVariableValue("L1_HTT240") || getVariableValue("L1_HTT270")){
+                dijetMassHisto_L1_HTT_240_270_or->Fill(getVariableValue("dijet_mass"));
+              }
+              if(getVariableValue("L1_HTT240") || getVariableValue("L1_HTT270") || getVariableValue("L1_HTT280")){
+                dijetMassHisto_L1_HTT_240_270_280_or->Fill(getVariableValue("dijet_mass"));
+              }
+              if(getVariableValue("L1_HTT240") || getVariableValue("L1_HTT270") || getVariableValue("L1_HTT280") || getVariableValue("L1_HTT300")){
+                dijetMassHisto_L1_HTT_240_270_280_300_or->Fill(getVariableValue("dijet_mass"));
+              }
+              if(getVariableValue("L1_HTT240") || getVariableValue("L1_HTT270") || getVariableValue("L1_HTT280") || getVariableValue("L1_HTT300") || getVariableValue("L1_HTT320")){
+                dijetMassHisto_L1_HTT_240_270_280_300_320_or->Fill(getVariableValue("dijet_mass"));
+              }
+            }
+            if(getVariableValue("L1_HTT240") == 1 && getVariableValue("jet2_pt")>70  /*&& abs(getVariableValue("dijet_deta"))<1.1*/ && getVariableValue("jet1_pt")>70){
+              if(getVariableValue("isr_pt") > 70) {
+                dijetMassHisto_70->Fill(getVariableValue("dijet_mass"));
+                if(abs(getVariableValue("dijet_deta"))>0.9 && abs(getVariableValue("dijet_deta"))<1.1) dijetMassHisto_70_dijet_deta_unblind->Fill(getVariableValue("dijet_deta"));
+                if(getVariableValue("htAK4") > 270) dijetMassHisto_70_HT_270->Fill(getVariableValue("dijet_mass"));
+                if(getVariableValue("L1_HTT270") == 1) dijetMassHisto_70_L1_HTT240_L1_HTT270->Fill(getVariableValue("dijet_mass"));
+                if(getVariableValue("L1_HTT320") == 1) dijetMassHisto_70_L1_HTT240_L1_HTT320->Fill(getVariableValue("dijet_mass"));
               }
               if      (getVariableValue("isr_pt") > 40   && getVariableValue("isr_pt") <= 50 )  dijetMassHisto_40_50->Fill(getVariableValue("dijet_mass"));
               else if (getVariableValue("isr_pt") > 50   && getVariableValue("isr_pt") <= 60 )  dijetMassHisto_50_60->Fill(getVariableValue("dijet_mass"));
@@ -977,11 +1027,11 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
           }
         }
         else{
-	  if(store_histogram){
-	    if(getVariableValue("isr_pt") > 50  && getVariableValue("jet2_pt")>45  && abs(getVariableValue("dijet_deta"))<1.2 && getVariableValue("jet1_pt")>90 ){
-	      dijetMassHisto->Fill(getVariableValue("dijet_mass"));
-	    }
-	  }
+      	  if(store_histogram){
+      	    if(getVariableValue("isr_pt") > 50  && getVariableValue("jet2_pt")>45  && abs(getVariableValue("dijet_deta"))<1.2 && getVariableValue("jet1_pt")>90 ){
+      	      dijetMassHisto->Fill(getVariableValue("dijet_mass"));
+      	    }
+      	  }
         }
 
 
@@ -1045,6 +1095,35 @@ bool test_method (const vector < TLorentzVector > &goodjets, const TLorentzVecto
     // //one could also do:  *h_pTJets = getHisto_noCuts_or_skim("pT1stJet") + getHisto_noCuts_or_skim("pT2ndJet");
     // h_pTJets->Write();
     // //one could also do:   const TH1F& h = getHisto_noCuts_or_skim// and use h
-
+    // if (store_histogram) {
+    //   reduced_skim_file_->cd();
+    //   TDirectory *dir1 = reduced_skim_file_->mkdir("DijetFilter");
+    //   // TDirectory *dir1 = reduced_skim_file_->GetDirectory("DijetFilter");
+    //   cout << dir1 << endl;
+    //   TDirectory *dir4 = dir1->mkdir("dijetMassHisto");
+    //   cout << dir4 << endl;
+    //   reduced_skim_file_->cd("DijetFilter/dijetMassHisto");
+    //   reduced_skim_file_->ls();
+    //   dijetMassHisto->Write();
+    //   dijetMassHisto_40_50->Write();
+    //   dijetMassHisto_50_60->Write();
+    //   dijetMassHisto_60_70->Write();
+    //   dijetMassHisto_70_80->Write();
+    //   dijetMassHisto_80_90->Write();
+    //   dijetMassHisto_90_100->Write();
+    //   dijetMassHisto_100_150->Write();
+    //   dijetMassHisto_150_200->Write();
+    //   dijetMassHisto_200_300->Write();
+    //   dijetMassHisto_300->Write();
+    //   dijetMassHisto_50->Write();
+    //   dijetMassHisto_50_HT_270->Write();
+    //   dijetMassHisto_50_L1_HTT240_L1_HTT270->Write();
+    //   dijetMassHisto_L1_HTT_240_270_or->Write();
+    //   dijetMassHisto_L1_HTT_240_270_280_or->Write();
+    //   dijetMassHisto_L1_HTT_240_270_280_300_or->Write();
+    //   dijetMassHisto_L1_HTT_240_270_280_300_320_or->Write();
+    //   // Any failure mode to implement?
+    //   reduced_skim_file_->cd();
+    // }
     std::cout << "analysisClass::Loop() ends" << std::endl;
   }

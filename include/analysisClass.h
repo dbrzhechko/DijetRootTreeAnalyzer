@@ -40,6 +40,25 @@ public :
 private :
   double bTagEventWeight(const vector<double>& SFsForBTaggedJets, const unsigned int nBTags);
   void fillTriggerPlots(TH1F* h_mjj_HLTpass[], double MJJWide);
+// define as struct later (or map with selections)
+  // TH1F *dijetMassHisto;
+  // TH1F *dijetMassHisto_40_50;
+  // TH1F *dijetMassHisto_50_60;
+  // TH1F *dijetMassHisto_60_70;
+  // TH1F *dijetMassHisto_70_80;
+  // TH1F *dijetMassHisto_80_90;
+  // TH1F *dijetMassHisto_90_100;
+  // TH1F *dijetMassHisto_100_150;
+  // TH1F *dijetMassHisto_150_200;
+  // TH1F *dijetMassHisto_200_300;
+  // TH1F *dijetMassHisto_300;
+  // TH1F *dijetMassHisto_50;
+  // TH1F *dijetMassHisto_50_HT_270;
+  // TH1F *dijetMassHisto_50_L1_HTT240_L1_HTT270;
+  // TH1F *dijetMassHisto_L1_HTT_240_270_or;
+  // TH1F *dijetMassHisto_L1_HTT_240_270_280_or;
+  // TH1F *dijetMassHisto_L1_HTT_240_270_280_300_or;
+  // TH1F *dijetMassHisto_L1_HTT_240_270_280_300_320_or;
 
   ClusterSequencePtr  fjClusterSeq, fjClusterSeq_shift;
   JetDefPtr           fjJetDefinition;

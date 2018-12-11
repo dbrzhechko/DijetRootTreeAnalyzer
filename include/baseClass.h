@@ -180,9 +180,15 @@ class baseClass : public rootNtupleClass {
 	TH1F *dijetMassHisto_150_200;
 	TH1F *dijetMassHisto_200_300;
 	TH1F *dijetMassHisto_300;
-	TH1F *dijetMassHisto_50;
-	TH1F *dijetMassHisto_50_HT_270;
-	TH1F *dijetMassHisto_50_L1_HTT240_L1_HTT270;
+	TH1F *dijetMassHisto_70;
+	TH1F *dijetMassHisto_70_HT_270;
+	TH1F *dijetMassHisto_70_L1_HTT240_L1_HTT270;
+	TH1F *dijetMassHisto_L1_HTT_240_270_or;
+	TH1F *dijetMassHisto_L1_HTT_240_270_280_or;
+	TH1F *dijetMassHisto_L1_HTT_240_270_280_300_or;
+	TH1F *dijetMassHisto_L1_HTT_240_270_280_300_320_or;
+	TH1F *dijetMassHisto_70_L1_HTT240_L1_HTT320;
+	TH1F *dijetMassHisto_70_dijet_deta_unblind;
 
   const TH1F& getHisto_noCuts_or_skim(const string& s);
   const TH1F& getHisto_allPreviousCuts(const string& s);
