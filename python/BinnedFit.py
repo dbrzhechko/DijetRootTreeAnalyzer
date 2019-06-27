@@ -10,6 +10,7 @@ import os
 import random
 import sys
 import math
+import re
 
 densityCorr = False
 
@@ -24,11 +25,13 @@ def binnedFit(pdf, data, fitRange='Full',useWeight=False):
     else:
         nll = pdf.createNLL(data,rt.RooFit.Range(fitRange),rt.RooFit.Extended(True),rt.RooFit.Offset(True))
         m2 = rt.RooMinimizer(nll)
+
         m2.setPrintLevel(0)
         m2.setPrintEvalErrors(0)
         m2.setStrategy(2)
         m2.setMaxFunctionCalls(100000 * 10000)
         m2.setMaxIterations(100000 * 10000)
+        migrad_status = m2.minimize('Minuit2','scan')
         migrad_status = m2.minimize('Minuit2','migrad')
         improve_status = m2.minimize('Minuit2','improve')
         hesse_status = m2.minimize('Minuit2','hesse')
@@ -37,6 +40,33 @@ def binnedFit(pdf, data, fitRange='Full',useWeight=False):
             hesse_status = m2.minimize('Minuit2','hesse')
         fr = m2.save()
     return fr
+
+def rescaleaxis(h,scale=1000):
+    """This function rescales the x-axis on a TGraph."""
+    N = h.GetXaxis().GetXbins().GetSize()
+    x = h.GetXaxis().GetXbins()
+    for i in range(N):
+        x[i] *= scale
+    # h.Delete()
+    # h.SetHistogram(0)
+    return
+#
+# def scaleY(x):
+#     return x*1000
+#
+# def scaleAxis(a, Scale):
+#     if a.GetXbins().GetSize():
+#         X=a.GetXbins()
+#         for i in range(0,X.GetSize()):
+#             X[i] = Scale(X[i])
+#         a.Set((X.GetSize() - 1), X.GetArray())
+#     else:
+#         a.Set( a.GetNbins(), Scale(a.GetXmin()), Scale(a.GetXmax()) )
+#     # return a
+#
+# def scaleXaxis(h, Scale):
+#     scaleAxis(h.GetXaxis(), Scale);
+#     return h
 
 def effFit(pdf, data, conditionalObs):
     nll = pdf.createNLL(data,rt.RooFit.Range('Eff'),rt.RooFit.Offset(True),rt.RooFit.ConditionalObservables(conditionalObs))
@@ -500,9 +530,9 @@ if __name__ == '__main__':
 
             if options.doSpectrumFit:
                 fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
                 rootTools.Utils.importToWS(w,fr)
                 fr.Print('v')
                 fr.Print()
@@ -673,7 +703,7 @@ if __name__ == '__main__':
         histo.Draw()
         #histo.GetXaxis().SetRangeUser(w.var('mjj').getMin('Eff'),w.var('mjj').getMax('Eff'))
         if options.l1Trigger:
-            histo.aetXaxis().SetRangeUser(w.var('mjj').getMin('Eff'),x[15])
+            histo.GetXaxis().SetRangeUser(w.var('mjj').getMin('Eff'),x[15])
         else:
             #histo.GetXaxis().SetRangeUser(w.var('mjj').getMin('Eff'),x[7])
             histo.GetXaxis().SetRangeUser(w.var('mjj').getMin('Eff'),x[-1])
@@ -806,8 +836,11 @@ if __name__ == '__main__':
 
     background_pdf = w.pdf('%s_bkg_unbin'%box)
     background= background_pdf.asTF(rt.RooArgList(w.var('mjj')),rt.RooArgList(w.var('p0_%s'%box)))
+    print "min:%s; max:%s; int_b:%s"%(w.var('mjj').getMin(), w.var('mjj').getMax(),background)
+    background.SaveAs("fits_trijet_2018/tf1.C")
     int_b = background.Integral(w.var('mjj').getMin(),w.var('mjj').getMax())
     print("int_b",int_b)
+    # exit()
     print("lumi",lumi)
     p0_b = w.var('Ntot_bkg_%s'%box).getVal() / (int_b * lumi)
     background.SetParameter(0,p0_b)
@@ -1169,13 +1202,20 @@ if __name__ == '__main__':
     if 'CaloTrijet' in box:
         # paper
         myRebinnedDensityTH1.GetYaxis().SetTitle('d#sigma/dm_{jj} [pb/TeV]')
-        myRebinnedDensityTH1.GetYaxis().SetLabelOffset(1)
         myRebinnedDensityTH1.GetYaxis().SetLabelOffset(1000)
+        # myRebinnedDensityTH1.Scale(1000)
+        # scaleAxis(myRebinnedDensityTH1.GetYaxis(), scaleY)
+        # rescaleaxis(myRebinnedDensityTH1)
+        # myRebinnedDensityTH1.GetYaxis().SetRangeUser(myRebinnedDensityTH1.GetMinimum()*1000, myRebinnedDensityTH1.GetMaximum()*1000)
+        # print "min:%s-max:%s"%(myRebinnedDensityTH1.GetMinimum(),myRebinnedDensityTH1.GetMaximum())
+        # myRebinnedDensityTH1.GetYaxis().SetLabelOffset(1000)
         yLab = rt.TLatex()
         yLab.SetTextAlign(32)
         yLab.SetTextSize(0.05)
         yLab.SetTextFont(42)
-        xM = 290
+        xM = myRebinnedDensityTH1.GetBinLowEdge(1)-(myRebinnedDensityTH1.GetBinLowEdge(myRebinnedDensityTH1.GetNbinsX())-myRebinnedDensityTH1.GetBinLowEdge(1))/150
+        # xM = 290
+        yLab.DrawLatex(xM, 10000, "10^{7}")
         yLab.DrawLatex(xM, 1000, "10^{6}")
         yLab.DrawLatex(xM, 100, "10^{5}")
         yLab.DrawLatex(xM, 10, "10^{4}")
@@ -1358,6 +1398,31 @@ if __name__ == '__main__':
     tdirectory.cd()
     c.Write()
 
+    # optionsOutdir = options.outDir
+    outParFile = open(options.outDir+"/fit_pars_mjj_%s_%s.log"%(fitRegion.replace(',','_'),box),"w+")
+    initCombPars=cfg.getVariables(box,"combine_parameters")
+    initialParDict={}
+    parNames=[]
+    for initCombPar in initCombPars:
+        parNames.append(re.split("\[|\]",initCombPar)[0])
+        initialParDict[re.split("\[|\]",initCombPar)[0]] = float(re.split("\[|\]",initCombPar)[1])
+    finalParDict={}
+    for parName in parNames:
+        finalParDict[parName] = w.var(parName).getVal()
+    outParFile.write("Initial values:\n")
+    for initCombPar in initCombPars:
+        outParFile.write("%s,\n"%initCombPar)
+    outParFile.write("\nFinal values:\n")
+    for name in parNames:
+        outParFile.write("%s[%s],\n"%(name,finalParDict[name]))
+
+    chi2=list_chi2AndNdf_background[4]
+    ndof=myRebinnedTH1.GetNbinsX()-int((((options.config).replace("Alt","*")).replace("Nom","*")).split("*")[1][0])
+    outParFile.write("\nchi2 = %s\n"%chi2)
+    outParFile.write("ndof = %s\n"%ndof)
+    outParFile.write("prob = %s\n"%(rt.TMath.Prob(chi2,ndof)))
+    outParFile.write("%s"%finalParDict)
+    outParFile.close()
 
     outFileName = "DijetFitResults_%s.root"%(box)
     outFile = rt.TFile.Open(options.outDir+"/"+outFileName,'recreate')

@@ -10,6 +10,7 @@ import os
 import random
 import sys
 import math
+import re
 
 densityCorr = False
 
@@ -24,6 +25,7 @@ def binnedFit(pdf, data, fitRange='Full',useWeight=False):
         m2.setStrategy(2)
         m2.setMaxFunctionCalls(10000 )
         m2.setMaxIterations(10000 )
+        migrad_status = m2.minimize('Minuit2','scan')
         migrad_status = m2.minimize('Minuit2','migrad')
         improve_status = m2.minimize('Minuit2','improve')
         hesse_status = m2.minimize('Minuit2','hesse')
@@ -456,9 +458,9 @@ def BinnedFitMod(options,args,configFile,cutValueDir,minRange):
 
             if options.doSpectrumFit:
                 fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
-                fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
+                # fr = binnedFit(extDijetPdf,dataHist,sideband,options.useWeight)
                 rootTools.Utils.importToWS(w,fr)
                 fr.Print('v')
                 fr.Print()
@@ -1132,7 +1134,9 @@ def BinnedFitMod(options,args,configFile,cutValueDir,minRange):
         yLab.SetTextAlign(32)
         yLab.SetTextSize(0.05)
         yLab.SetTextFont(42)
-        xM = 290
+        xM = myRebinnedDensityTH1.GetBinLowEdge(1)-(myRebinnedDensityTH1.GetBinLowEdge(myRebinnedDensityTH1.GetNbinsX())-myRebinnedDensityTH1.GetBinLowEdge(1))/150
+        # xM = 290
+        yLab.DrawLatex(xM, 10000, "10^{7}")
         yLab.DrawLatex(xM, 1000, "10^{6}")
         yLab.DrawLatex(xM, 100, "10^{5}")
         yLab.DrawLatex(xM, 10, "10^{4}")
@@ -1315,10 +1319,31 @@ def BinnedFitMod(options,args,configFile,cutValueDir,minRange):
     tdirectory.cd()
     c.Write()
 
+    outParFile = open(optionsOutdir+"/fit_pars_mjj_%s_%s.log"%(fitRegion.replace(',','_'),box),"w+")
+    initCombPars=cfg.getVariables(box,"combine_parameters")
+    initialParDict={}
+    parNames=[]
+    for initCombPar in initCombPars:
+        parNames.append(re.split("\[|\]",initCombPar)[0])
+        initialParDict[re.split("\[|\]",initCombPar)[0]] = float(re.split("\[|\]",initCombPar)[1])
+    finalParDict={}
+    for parName in parNames:
+        finalParDict[parName] = w.var(parName).getVal()
+    outParFile.write("Initial values:\n")
+    for initCombPar in initCombPars:
+        outParFile.write("%s,\n"%initCombPar)
+    outParFile.write("\nFinal values:\n")
+    parValues=[]
+    for name in parNames:
+        outParFile.write("%s[%s],\n"%(name,finalParDict[name]))
+
+    outParFile.write("\nchi2 = %s\n"%(list_chi2AndNdf_background[4]/list_chi2AndNdf_background[5]))
+    outParFile.write("nbins = %s\n"%(myRebinnedTH1.GetNbinsX()))
+    outParFile.close()
 
     outFileName = "DijetFitResults_%s.root"%(box)
     outFile = rt.TFile.Open(optionsOutdir+"/"+outFileName,'recreate')
     outFile.cd()
     w.Write()
     outFile.Close()
-    return list_chi2AndNdf_background[4]/list_chi2AndNdf_background[5]
+    return [list_chi2AndNdf_background[4]/list_chi2AndNdf_background[5], finalParDict]
