@@ -26,7 +26,10 @@ def submit_jobs_uzh(options,args):
     command = " ".join(opts)
     for massPoint in massIterable(options.mass):
         commandMass = "python " + command + " --mass "+str(massPoint)
-        fileName = 'submit_bias_study/lauch_%s_%s_%s.sh'%(str(massPoint),options.genPdf,options.fitPdf)
+        optString = ""
+        if options.asymptoticFile is None:
+            optString = "_bkgOnly"
+        fileName = 'submit_bias_study/lauch%s_%s_%s_%s.sh'%(optString,str(massPoint),options.genPdf,options.fitPdf)
         pwd = os.environ['PWD']
         print('######### Creating %s ############'%fileName)
         txt = open(fileName,'w')
@@ -51,24 +54,24 @@ def exec_me(command,dryRun=True):
 def main(options,args):
     signalDsName = ''
     if box=='CaloDijet2016':
-        signalDsName = 'inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16.root'%model
+        signalDsName = '../inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16.root'%model
     elif box=='PFDijet2016':
-        signalDsName = 'inputs/ResonanceShapes_%s_13TeV_Spring16.root'%model
+        signalDsName = '../inputs/ResonanceShapes_%s_13TeV_Spring16.root'%model
     elif box=='CaloTrijet2016':
-        signalDsName = 'inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016.root'%model
+        signalDsName = '../inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016.root'%model
 
 
     signalSys = ''
     if not(options.noSignalSys):
         if box=='CaloDijet2016':
-            signalSys  = '--jesUp inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JESUP.root --jesDown inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JESDOWN.root'%(model,model)
-            signalSys += ' --jerUp inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JERUP.root --jerDown inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JERDOWN.root'%(model,model)
+            signalSys  = '--jesUp ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JESUP.root --jesDown ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JESDOWN.root'%(model,model)
+            signalSys += ' --jerUp ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JERUP.root --jerDown ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_Spring16_JERDOWN.root'%(model,model)
         elif box=='PFDijet2016':
-            signalSys  =   '--jesUp inputs/ResonanceShapes_%s_13TeV_Spring16_JESUP.root --jesDown inputs/ResonanceShapes_%s_13TeV_Spring16_JESDOWN.root'%(model,model)
-            signalSys += ' --jerUp inputs/ResonanceShapes_%s_13TeV_Spring16_JERUP.root'%(model)
+            signalSys  =   '--jesUp ../inputs/ResonanceShapes_%s_13TeV_Spring16_JESUP.root --jesDown ../inputs/ResonanceShapes_%s_13TeV_Spring16_JESDOWN.root'%(model,model)
+            signalSys += ' --jerUp ../inputs/ResonanceShapes_%s_13TeV_Spring16_JERUP.root'%(model)
         elif box=='CaloTrijet2016':
-            signalSys  = ' --jesUp inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JESUP.root --jesDown inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JESDOWN.root'%(model,model)
-            signalSys += ' --jerUp inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JERUP.root --jerDown inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JERDOWN.root'%(model,model)
+            signalSys  = ' --jesUp ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JESUP.root --jesDown ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JESDOWN.root'%(model,model)
+            signalSys += ' --jerUp ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JERUP.root --jerDown ../inputs/ResonanceShapes_%s_13TeV_CaloScouting_2016_JERDOWN.root'%(model,model)
 
 
     xsecTree = None
@@ -92,10 +95,9 @@ def main(options,args):
 
     xsecString = '--xsec %f'%options.xsec
     rRangeString =  '--rMin %s --rMax %s'%(options.rMin,options.rMax)
-#    rRangeString =  '--setPhysicsModelParameterRanges r=%s,%s'%(options.rMin,options.rMax)
 
-    fixStringGen = '--setPhysicsModelParameters pdf_index=%i'%(pdfIndexMap[options.genPdf])
-    freezeStringGen = '--freezeNuisances pdf_index'
+    fixStringGen = '--setParameters pdf_index=%i'%(pdfIndexMap[options.genPdf])
+    freezeStringGen = '--freezeParameters pdf_index'
 #    if options.genPdf != 'fiveparam':
 #        freezeStringGen += ',p51_CaloTrijet2016,p52_CaloTrijet2016,p53_CaloTrijet2016,p54_CaloTrijet2016'
 #    if options.genPdf != 'modexp':
@@ -136,8 +138,8 @@ def main(options,args):
 #        freezeStringGen += ',p3alt1_CaloTrijet2016,p3alt2_CaloTrijet2016'
 
 
-    fixStringFit = '--setPhysicsModelParameters pdf_index=%i'%(pdfIndexMap[options.fitPdf])
-    freezeStringFit = '--freezeNuisances pdf_index'
+    fixStringFit = '--setParameters pdf_index=%i'%(pdfIndexMap[options.fitPdf])
+    freezeStringFit = '--freezeParameters pdf_index'
     if options.fitPdf != 'fiveparam':
         freezeStringFit += ',p51_CaloTrijet2016,p52_CaloTrijet2016,p53_CaloTrijet2016,p54_CaloTrijet2016'
     if options.fitPdf != 'modexp':
@@ -154,6 +156,10 @@ def main(options,args):
         freezeStringFit += ',p1s5_CaloTrijet2016,p2s5_CaloTrijet2016,p3s5_CaloTrijet2016,p4s5_CaloTrijet2016'
     if options.fitPdf != 'silvio6':
         freezeStringFit += ',p1s6_CaloTrijet2016,p2s6_CaloTrijet2016,p3s6_CaloTrijet2016,p4s6_CaloTrijet2016,p5s6_CaloTrijet2016'
+    if options.fitPdf != 'polext7':
+        freezeStringFit += ',p7p1_CaloTrijet2016,p7p2_CaloTrijet2016,p7p3_CaloTrijet2016,p7p4_CaloTrijet2016,p7p5_CaloTrijet2016,p7p6_CaloTrijet2016'
+    if options.fitPdf != 'pol8':
+        freezeStringFit += ',p8p1_CaloTrijet2016,p8p2_CaloTrijet2016,p8p3_CaloTrijet2016,p8p4_CaloTrijet2016,p8p5_CaloTrijet2016,p8p6_CaloTrijet2016,p8p7_CaloTrijet2016'
     if options.fitPdf != 'nom7':
         freezeStringFit += ',p7nom1_CaloTrijet2016,p7nom2_CaloTrijet2016,p7nom3_CaloTrijet2016,p7nom4_CaloTrijet2016,p7nom5_CaloTrijet2016,p7nom6_CaloTrijet2016'
     if options.fitPdf != 'nom6':
@@ -176,6 +182,11 @@ def main(options,args):
         freezeStringFit += ',p3alt1_CaloTrijet2016,p3alt2_CaloTrijet2016'
 
     pwd = os.environ['PWD']
+#    toysOptions = "--toysFrequentist --bypassFrequentistFit " #non fitta
+    toysOptions = "--toysFrequentist" #fitta
+#    toysOptions = "" #non fitta
+#    toysOptions = "--toysNoSystematics" #1fit
+#    toysOptions = "--toysNoSystematics --bypassFrequentistFit" #1fit
     for massPoint in massIterable(options.mass):
 #        rDict[int(massPoint)] = -0.1
         #exec_me('python python/WriteDataCard.py -m %s --mass %s -i %s -l %f -c %s -b %s -d %s %s %s %s %s --multi'%(model, massPoint, options.inputFitFile,1000*lumi,options.config,box,options.outDir,signalDsName,backgroundDsName[box],xsecString,signalSys),options.dryRun)
@@ -184,18 +195,17 @@ def main(options,args):
 #        exec_me('mv higgsCombine%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.GenerateOnly.mH120.123456.root %s/'%(model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,options.outDir),options.dryRun)
 #        exec_me('mv higgsCombine%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.MaxLikelihoodFit.mH120.123456.root %s/'%(model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,options.outDir),options.dryRun)
 #        exec_me('mv mlfit%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.root %s/'%(model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,options.outDir),options.dryRun)
-        exec_me('python python/WriteDataCard.py -m %s --mass %s -i %s -l %f -c %s -b %s -d %s %s %s %s %s --multi'%(model, massPoint, options.inputFitFile,1000*lumi,options.config,box,".",signalDsName,backgroundDsName[box],xsecString,signalSys),options.dryRun)
-        exec_me('mv dijet_combine_%s_%s_lumi-%.3f_%s.* %s'%(model,massPoint,lumi,box,options.outDir),options.dryRun)
+        exec_me('cd %s && python ../python/WriteDataCard.py -m %s --mass %s -i ../%s -l %f -c ../%s -b %s -d %s %s ../%s %s %s --multi'%(options.outDir, model, massPoint, options.inputFitFile,1000*lumi,options.config,box,".",signalDsName,backgroundDsName[box],xsecString,signalSys),options.dryRun)
+#        exec_me('cp dijet_combine_%s_%s_lumi-%.3f_%s.* %s'%(model,massPoint,lumi,box,options.outDir),options.dryRun)
         if options.step=="all" or options.step=="generator":
             if (rDict[int(massPoint)]!=0):
-                exec_me('cd %s && combine -M GenerateOnly dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s %s %s %s --saveToys --toysFrequentist --bypassFrequentistFit --expectSignal %.3f -t %i'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,rRangeString,fixStringGen,freezeStringGen,rDict[int(massPoint)],options.toys),options.dryRun)
+                exec_me('cd %s && combine -M GenerateOnly dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s %s %s %s --saveToys %s --expectSignal %.3f -t %i'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,rRangeString,fixStringGen,freezeStringGen,toysOptions,rDict[int(massPoint)],options.toys),options.dryRun)
             else:
-                exec_me('cd %s && combine -M GenerateOnly dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s %s %s %s --saveToys --toysFrequentist --bypassFrequentistFit --expectSignal 1E-20 -t %i'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,rRangeString,fixStringGen,freezeStringGen,options.toys),options.dryRun)
+                exec_me('cd %s && combine -M GenerateOnly dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s %s %s %s --saveToys %s --expectSignal 1E-20 -t %i'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,rRangeString,fixStringGen,freezeStringGen,toysOptions,options.toys),options.dryRun)
         
         if options.step=="all" or options.step=="fit":
-            exec_me('cd %s && combine -M MaxLikelihoodFit --robustFit=1 dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s --toysFile higgsCombine%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.GenerateOnly.mH120.123456.root -t %i %s %s %s  --saveWorkspace'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,options.toys,rRangeString,fixStringFit,freezeStringFit),options.dryRun)
+            exec_me('cd %s && combine -M FitDiagnostics --robustFit=1 --cminDefaultMinimizerStrategy 0 dijet_combine_%s_%s_lumi-%.3f_%s.txt -n %s_%s_lumi-%.3f_r-%.3f_%s_%s_%s --toysFile higgsCombine%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.GenerateOnly.mH120.123456.root -t %i %s %s %s --saveWorkspace'%(options.outDir,model,massPoint,lumi,box,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,model,massPoint,lumi,rDict[int(massPoint)],box,options.genPdf,options.fitPdf,options.toys,rRangeString,fixStringFit,freezeStringFit),options.dryRun)
         
-        ## --minimizerTolerance 9.99999975e-02 --minimizerStrategy 0 --minos poi
         
 #        exec_me('python python/WriteDataCard.py -m %s --mass %s -i %s -l %f -c %s -b %s -d %s %s %s %s %s --multi'%(model, massPoint, options.inputFitFile,1000*lumi,options.config,box,".",signalDsName,backgroundDsName[box],xsecString,signalSys),options.dryRun)
 #        exec_me('mv dijet_combine_%s_%s_lumi-%.3f_%s.* %s'%(model,massPoint,lumi,box,options.outDir),options.dryRun)
@@ -235,9 +245,9 @@ if __name__ == '__main__':
                   help="Output directory to store everything")
     parser.add_option('-t','--toys',dest="toys",default=1000,type="int",
                   help="number of toys")
-    parser.add_option('--gen-pdf',dest="genPdf", default="fiveparam", choices=['modexp','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','nom3','alt3','nom4','alt4','nom5','alt5','nom6','alt6','nom7','alt7'],
+    parser.add_option('--gen-pdf',dest="genPdf", default="fiveparam", choices=['modexp','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','nom3','alt3','nom4','alt4','nom5','alt5','nom6','alt6','nom7','alt7','polext7','pol8'],
                   help="pdf for generating")
-    parser.add_option('--fit-pdf',dest="fitPdf", default="fiveparam", choices=['modexp','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','nom3','alt3','nom4','alt4','nom5','alt5','nom6','alt6','nom7','alt7'],
+    parser.add_option('--fit-pdf',dest="fitPdf", default="fiveparam", choices=['modexp','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','nom3','alt3','nom4','alt4','nom5','alt5','nom6','alt6','nom7','alt7','polext7','pol8'],
                   help="pdf for fitting")
     parser.add_option('--asymptotic-file',dest="asymptoticFile",default=None,type="string",
                   help="load asymptotic cross section results file")
@@ -268,6 +278,8 @@ if __name__ == '__main__':
                    'alt5': 14,
                    'alt6': 15,
                    'alt7': 16,
+                   'polext7': 17,
+                   'pol8': 18,
                    }
 
     box = options.box

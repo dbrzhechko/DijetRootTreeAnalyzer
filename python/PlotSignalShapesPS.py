@@ -108,6 +108,9 @@ if __name__ == '__main__':
     for model in models:                
         shapes = []
         shapeFiles = {}
+        shapes.append('ps')
+        shapeFiles['psUp'] = signalFileName[model].replace('.root','_PSUP.root')
+        shapeFiles['psDown'] = signalFileName[model].replace('.root','_PSDOWN.root')
         shapes.append('jes')
         shapeFiles['jesUp'] = signalFileName[model].replace('.root','_JESUP.root')
         shapeFiles['jesDown'] = signalFileName[model].replace('.root','_JESDOWN.root')

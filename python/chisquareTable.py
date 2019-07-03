@@ -4,9 +4,9 @@ import BinnedFitMod
 import ROOT
 import re
 #import th3fToth1f
-# signal_mjj_binning = [1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649, 693, 740, 788, 838, 890, 944, 1000, 1058, 1118, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5455, 5663, 5877, 6099, 6328, 6564, 6808, 7060, 7320, 7589, 7866, 8152, 8447, 8752, 9067, 9391, 9726, 10072, 10430, 10798, 11179, 11571, 11977, 12395, 12827, 13272, 13732, 14000]
+signal_mjj_binning = [1, 3, 6, 10, 16, 23, 31, 40, 50, 61, 74, 88, 103, 119, 137, 156, 176, 197, 220, 244, 270, 296, 325, 354, 386, 419, 453, 489, 526, 565, 606, 649, 693, 740, 788, 838, 890, 944, 1000, 1058, 1118, 1181, 1246, 1313, 1383, 1455, 1530, 1607, 1687, 1770, 1856, 1945, 2037, 2132, 2231, 2332, 2438, 2546, 2659, 2775, 2895, 3019, 3147, 3279, 3416, 3558, 3704, 3854, 4010, 4171, 4337, 4509, 4686, 4869, 5058, 5253, 5455, 5663, 5877, 6099, 6328, 6564, 6808, 7060, 7320, 7589, 7866, 8152, 8447, 8752, 9067, 9391, 9726, 10072, 10430, 10798, 11179, 11571, 11977, 12395, 12827, 13272, 13732, 14000]
 
-isrPtCutBinning = [40,50,60,70,80,90]
+#isrPtCutBinning = [40,50,60,70,80,90]
 
 def findLines(lines, findString, box):
 
@@ -168,10 +168,12 @@ def main(options,args):
         isrPtCutArray.append(pt)
 #    isrPtCutArray   = [70]
     triggerArray = ["L1_HTT240", "L1_HTT240 && HT270", "L1_HTT240 && L1_HTT270", "L1_HTT240 && L1_HTT320", "L1_HTT_240..270_or", "L1_HTT_240..280_or", "L1_HTT_240..300_or", "L1_HTT_240..320_or"]
-    # minBinArr = [220, 244, 270, 296, 325]
-    minBinArr=[]
-    for bin in range(options.mjjLow,options.mjjHigh+1,options.mjjBinning):
-        minBinArr.append(bin)
+    if options.mjjBinning>0:
+        minBinArr=[]
+        for bin in range(options.mjjLow,options.mjjHigh+1,options.mjjBinning):
+            minBinArr.append(bin)
+    else:
+        minBinArr = [220, 244, 270, 296, 325]
     # minBinArr = [240,250,260,270,280,290,300,310]
     cutDict = {"trigger":  triggerArray,
                "isrPtCut": isrPtCutArray,
@@ -179,7 +181,17 @@ def main(options,args):
     keyType = options.cutType
     # isrPtCutArray   = [70.]
     # minBinArr = [296.]
-    chiSquareHisto  = ROOT.TH2F("chi2_profile", "Chi2 profile", len(cutDict[keyType]), cutDict[keyType][0], isrPtCutBinning[isrPtCutBinning.index(cutDict[keyType][-1])+options.isrPtBinning], len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
+    print("keyType=",keyType)
+    print("cutDict[keyType]=",cutDict[keyType])
+    print("len(cutDict[keyType])=",len(cutDict[keyType]))
+    print("cutDict[keyType][0]=",cutDict[keyType][0])
+    print("cutDict[keyType][-1]=",cutDict[keyType][-1])
+    print("isrPtCutBinning=",isrPtCutBinning)
+    print("signal_mjj_binning=",signal_mjj_binning)
+    if keyType == "trigger":
+        chiSquareHisto  = ROOT.TH2F("chi2_profile", "Chi2 profile", len(cutDict[keyType]), 0, len(cutDict[keyType]), len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
+    else:
+        chiSquareHisto  = ROOT.TH2F("chi2_profile", "Chi2 profile", len(cutDict[keyType]), cutDict[keyType][0], isrPtCutBinning[isrPtCutBinning.index(cutDict[keyType][-1])+options.isrPtBinning], len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
     NtotHisto       = ROOT.TH2F("NtotHisto",    "Chi2 profile", len(cutDict[keyType]), 0.5, len(cutDict)+0.5, len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
     p0Histo         = ROOT.TH2F("p0Histo",      "Chi2 profile", len(cutDict[keyType]), 0.5, len(cutDict)+0.5, len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
     p1Histo         = ROOT.TH2F("p1Histo",      "Chi2 profile", len(cutDict[keyType]), 0.5, len(cutDict)+0.5, len(minBinArr), minBinArr[0], signal_mjj_binning[signal_mjj_binning.index(minBinArr[-1])+1])
@@ -351,7 +363,7 @@ if __name__ == '__main__':
     parser.add_option('--mjj-high',dest="mjjHigh",type="int",
                   help="mjj maximal lower bound",default=320)
     parser.add_option('--mjj-binning',dest="mjjBinning",type="int",
-                  help="mjj binning", default=10)
+                  help="mjj binning", default=-1)
     parser.add_option('--isrpt-low',dest="isrPtLow",type="int",
                   help="isr Pt minimal lower bound",default=40)
     parser.add_option('--isrpt-high',dest="isrPtHigh",type="int",
@@ -367,9 +379,10 @@ if __name__ == '__main__':
     for i in range (40,151,1):
         isrPtCutBinning.append(i)
 
-    signal_mjj_binning=[]
-    for mjj in range(100,1201,options.mjjBinning):
-        signal_mjj_binning.append(mjj)
+    if options.mjjBinning>0:
+        signal_mjj_binning=[]
+        for mjj in range(100,1201,options.mjjBinning):
+            signal_mjj_binning.append(mjj)
     trigger_histo_map = {
         "L1_HTT240": "'DijetFilter/dijetMassHisto/dijetMassHisto_isrptcut_70'",
         "L1_HTT240 && HT270": "'DijetFilter/dijetMassHisto/dijetMassHisto_isrptcut_70_HT_270'",

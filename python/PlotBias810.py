@@ -43,7 +43,7 @@ def getBiasHistos(varName,toyTree):
     ## SD MOD
 #    toyTree.Project('h_bias','%s'%(varName),'(muHiErr+mu)<19&&(mu-muLoErr)>-19')
 #    toyTree.Project('h_bias','%s'%(varName),'(muHiErr+mu)<9.9&&(mu-muLoErr)>-9.9 && muErr>0 && muLoErr>0 && muHiErr>0')
-    toyTree.Project('h_bias','%s'%(varName),'(muHiErr+mu)<99&&(mu-muLoErr)>-99 && muErr>0 && muLoErr>0 && muHiErr>0')
+    toyTree.Project('h_bias','%s'%(varName),'(rHiErr+r)<99&&(r-rLoErr)>-99 && rErr>0 && rLoErr>0 && rHiErr>0')
 
     return h
 
@@ -69,7 +69,7 @@ def getBiasDivRHistos(varName,toyTree):
     ##     pass
 
 #    toyTree.Project('h_bias','%s'%(varName),'(muHiErr+mu)<19&&(mu-muLoErr)>-19')
-    toyTree.Project('h_bias','%s'%(varName),'(muHiErr+mu)<99&&(mu-muLoErr)>-99 && muErr>0 && muLoErr>0 && muHiErr>0')
+    toyTree.Project('h_bias','%s'%(varName),'(rHiErr+r)<99&&(r-rLoErr)>-99 && rErr>0 && rLoErr>0 && rHiErr>0')
 
     return h
 
@@ -133,8 +133,8 @@ def print1DBias(c,rootFile,h,func,printName,xTitle,yTitle,lumiLabel="",boxLabel=
        fract_2s_err = (fract_2s * (1. - fract_2s)/ integ)**0.5
     else:
        fract_2s = 0
-       fract_2s_err = 0    
-
+       fract_2s_err = 0 
+    
 #    tLeg.AddEntry(h,"#splitline{Pseudodata}{%s (%s GeV) #mu=%1.3f }"%(options.model, massPoint,rDict[int(massPoint)]),"lep")
     tLeg.AddEntry(h,"#splitline{Pseudodata %s (%s GeV) #mu=%1.3f }{mean = %1.2f, RMS = %1.2f}"%(options.model, massPoint,rDict[int(massPoint)],h.GetMean(),h.GetRMS()),"lep")
     tLeg.AddEntry(func,"#splitline{Gaussian fit}{#mu = %+1.2f #pm %1.2f, #sigma = %1.2f #pm %1.2f}"%(func.GetParameter(1),func.GetParError(1),func.GetParameter(2),func.GetParError(2)),"l")
@@ -175,6 +175,8 @@ def print1DBias(c,rootFile,h,func,printName,xTitle,yTitle,lumiLabel="",boxLabel=
                 'nom5': '5-par. nominal funct.',
                 'nom6': '6-par. nominal funct.',
                 'nom7': '7-par. nominal funct.',
+                'polext7': '7-par. polinomial ext.',
+                'pol8': '8-par. polynomial',
                 }
     l.DrawLatex(0.15,0.82,'gen. pdf = %s'%pdf_dict[options.genPdf])
     l.DrawLatex(0.15,0.77,'fit pdf = %s'%pdf_dict[options.fitPdf])
@@ -206,9 +208,9 @@ if __name__ == '__main__':
                   help="mass of resonance")
     parser.add_option('-r',dest="r",default=1,type="float",
                   help="expect signal r value")
-    parser.add_option('--gen-pdf',dest="genPdf", default="modexp", choices=['modexp','fourparam','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','alt3','alt4','alt5','alt6','alt7','nom3','nom4','nom5','nom6','nom7'],
+    parser.add_option('--gen-pdf',dest="genPdf", default="modexp", choices=['modexp','fourparam','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','alt3','alt4','alt5','alt6','alt7','polext7','pol8','nom3','nom4','nom5','nom6','nom7'],
                   help="pdf for generating")
-    parser.add_option('--fit-pdf',dest="fitPdf", default="fourparam", choices=['modexp','fourparam','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','alt3','alt4','alt5','alt6','alt7','nom3','nom4','nom5','nom6','nom7'],
+    parser.add_option('--fit-pdf',dest="fitPdf", default="fourparam", choices=['modexp','fourparam','fiveparam','atlas','atlas6','silvio4','silvio5','silvio6','alt3','alt4','alt5','alt6','alt7','polext7','pol8','nom3','nom4','nom5','nom6','nom7'],
                   help="pdf for fitting")
     parser.add_option('--asymptotic-file',dest="asymptoticFile",default=None,type="string",
                   help="load asymptotic cross section results file")
@@ -268,14 +270,14 @@ if __name__ == '__main__':
     histVsMass = rt.TH1D('histVsMass','histVsMass',100,int(massIterable(options.mass)[0])-100,int(massIterable(options.mass)[-1])+100)
 
     for i, massPoint in enumerate(massIterable(options.mass)):
-        inputToyFile = '%s/mlfit%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.root'%(options.outDir,options.model,massPoint,(options.lumi/1000.),rDict[int(massPoint)],box,options.genPdf,options.fitPdf)
+        inputToyFile = '%s/fitDiagnostics%s_%s_lumi-%.3f_r-%.3f_%s_%s_%s.root'%(options.outDir,options.model,massPoint,(options.lumi/1000.),rDict[int(massPoint)],box,options.genPdf,options.fitPdf)
         toyTree = rt.TChain("tree_fit_sb")
         toyTree.Add(inputToyFile)
         toyTree.Print()
 
 
-        h_bias = getBiasHistos('(mu-%.3f)/((muLoErr+muHiErr)/2.)'%rDict[int(massPoint)],toyTree)
-        h_bias_divr = getBiasDivRHistos('(mu-%.3f)/(%.3f)'%(rDict[int(massPoint)],rDict[int(massPoint)]),toyTree)
+        h_bias = getBiasHistos('(r-%.3f)/((rLoErr+rHiErr)/2.)'%rDict[int(massPoint)],toyTree)
+        h_bias_divr = getBiasDivRHistos('(r-%.3f)/(%.3f)'%(rDict[int(massPoint)],rDict[int(massPoint)]),toyTree)
 
 
         gaus_func = rt.TF1("gaus_func","gaus(0)",-4,4)
@@ -352,6 +354,8 @@ if __name__ == '__main__':
                 'nom5': '5-par. nominal funct.',
                 'nom6': '6-par. nominal funct.',
                 'nom7': '7-par. nominal funct.',
+                'polext7': '7-par. polynomial ext.',
+                'pol8': '8-par. polynomial',
                 }
     l.DrawLatex(0.15,0.82,'gen. pdf = %s'%pdf_dict[options.genPdf])
     l.DrawLatex(0.15,0.77,'fit pdf = %s'%pdf_dict[options.fitPdf])

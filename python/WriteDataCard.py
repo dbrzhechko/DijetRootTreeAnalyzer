@@ -168,19 +168,22 @@ def writeDataCard(box,model,txtfileName,bkgs,paramNames,w,penalty,fixed,shapes=[
                 rates = [w.data("%s_%s"%(box,sig)).sumEntries() for sig in model.split('p')]
                 processes = ["%s_%s"%(box,sig) for sig in model.split('p')]
                 if '2015' in box:
-                        lumiErrs = [1.027 for sig in model.split('p')]
+                        lumiErrs = [1.023 for sig in model.split('p')]
                 elif '2016' in box:
-                        lumiErrs = [1.062 for sig in model.split('p')]
+                        lumiErrs = [1.025 for sig in model.split('p')]
+                sigNormErrs = [options.theorySys for sig in model.split('p')]
         else:
                 rates = [w.data("%s_%s"%(box,model)).sumEntries()]
                 processes = ["%s_%s"%(box,model)]
                 if '2015' in box:
-                        lumiErrs = [1.027]
+                        lumiErrs = [1.023]
                 elif '2016' in box:
-                        lumiErrs = [1.062]
+                        lumiErrs = [1.025]
+                sigNormErrs = [options.theorySys]
         rates.extend([w.var('Ntot_%s_%s'%(bkg,box)).getVal() for bkg in bkgs])
         processes.extend(["%s_%s"%(box,bkg) for bkg in bkgs])
         lumiErrs.extend([1.00 for bkg in bkgs])
+        sigNormErrs.extend([1.00 for bkg in bkgs])
         divider = "------------------------------------------------------------\n"
         datacard = "imax 1 number of channels\n" + \
                    "jmax %i number of processes minus 1\n"%(nBkgd+signals-1) + \
@@ -195,16 +198,19 @@ def writeDataCard(box,model,txtfileName,bkgs,paramNames,w,penalty,fixed,shapes=[
         processNumberString = "process"
         rateString = "rate"
         lumiString = "lumi\tlnN"
+        sigNormString = "theory\tlnN"
         for i in range(0,len(bkgs)+signals):
             binString +="\t%s"%box
             processString += "\t%s"%processes[i]
             processNumberString += "\t%i"%(i-signals+1)
             rateString += "\t%.3f" %rates[i]
             lumiString += "\t%.3f"%lumiErrs[i]
-        binString+="\n"; processString+="\n"; processNumberString+="\n"; rateString +="\n"; lumiString+="\n"
+            sigNormString += "\t%.3f"%sigNormErrs[i]
+        binString+="\n"; processString+="\n"; processNumberString+="\n"; rateString +="\n"; lumiString+="\n"; sigNormString+="\n"
         datacard+=binString+processString+processNumberString+rateString+divider
         # now nuisances
         datacard+=lumiString
+        datacard+=sigNormString
         for shape in shapes:
             shapeString = '%s\tshape\t'%shape
             for sig in range(0,signals):
@@ -261,22 +267,24 @@ def writeDataCardMC(box,model,txtfileName,bkgs,paramNames,w):
                 rates = [w.data("%s_%s"%(box,sig)).sumEntries() for sig in model.split('p')]
                 processes = ["%s_%s"%(box,sig) for sig in model.split('p')]
                 if '2015' in box:
-                        lumiErrs = [1.027 for sig in model.split('p')]
+                        lumiErrs = [1.023 for sig in model.split('p')]
                 elif '2016' in box:
-                        lumiErrs = [1.062 for sig in model.split('p')]
+                        lumiErrs = [1.025 for sig in model.split('p')]
+                sigNormErrs = [options.theorySys for sig in model.split('p')]
         else:
                 rates = [w.data("%s_%s"%(box,model)).sumEntries()]
                 processes = ["%s_%s"%(box,model)]
                 if '2015' in box:
-                        lumiErrs = [1.027]
+                        lumiErrs = [1.023]
                 elif '2016' in box:
-                        lumiErrs = [1.062]
+                        lumiErrs = [1.025]
+                sigNormErrs = [options.theorySys]
         rates.extend([w.var('Ntot_%s_%s'%(bkg,box)).getVal() for bkg in bkgs])
         processes.extend(["%s_%s"%(box,bkg) for bkg in bkgs])
         if '2015' in box:
-                lumiErrs.extend([1.027 for bkg in bkgs])
+                lumiErrs.extend([1.023 for bkg in bkgs])
         elif '2016' in box:
-                lumiErrs.extend([1.062 for bkg in bkgs])
+                lumiErrs.extend([1.025 for bkg in bkgs])
         divider = "------------------------------------------------------------\n"
         datacard = "imax 1 number of channels\n" + \
                    "jmax %i number of processes minus 1\n"%(nBkgd+signals-1) + \
@@ -291,16 +299,19 @@ def writeDataCardMC(box,model,txtfileName,bkgs,paramNames,w):
         processNumberString = "process"
         rateString = "rate"
         lumiString = "lumi\tlnN"
+        sigNormString = "theory\tlnN"
         for i in range(0,len(bkgs)+signals):
             binString +="\t%s"%box
             processString += "\t%s"%processes[i]
             processNumberString += "\t%i"%(i-signals+1)
             rateString += "\t%.3f" %rates[i]
             lumiString += "\t%.3f"%lumiErrs[i]
-        binString+="\n"; processString+="\n"; processNumberString+="\n"; rateString +="\n"; lumiString+="\n"
+            sigNormString += "\t%.3f"%sigNormErrs[i]
+        binString+="\n"; processString+="\n"; processNumberString+="\n"; rateString +="\n"; lumiString+="\n"; sigNormString+="\n"
         datacard+=binString+processString+processNumberString+rateString+divider
         # now nuisances
         datacard+=lumiString
+        datacard+=sigNormString
         for shape in shapes:
             shapeString = '%s\tshape\t'%shape
             for sig in range(0,signals):
@@ -378,6 +389,10 @@ if __name__ == '__main__':
                   help="jes Down file")
     parser.add_option('--jerDown',dest="jerDownFile", default=None,type="string",
                   help="jer Down file")
+    parser.add_option('--psUp',dest="psUpFile", default=None,type="string",
+                  help="ps Up file")
+    parser.add_option('--psDown',dest="psDownFile", default=None,type="string",
+                  help="ps Down file")
     parser.add_option('-b','--box',dest="box", default="CaloDijet",type="string",
                   help="box name")
     parser.add_option('--asimov',dest="asimov",default=False,action='store_true',
@@ -392,6 +407,8 @@ if __name__ == '__main__':
                   help="signal model name")
     parser.add_option('--mass',dest="mass", default=750,type="float",
                   help="mass of resonance")
+    parser.add_option('--theorySys',dest="theorySys", default=1,type="float",
+                  help="signal normaliztion systematic uncertainty")
     parser.add_option('--xsec',dest="xsec", default=1,type="float",
                   help="xsec of resonance")
     parser.add_option('--no-signal-sys',dest="noSignalSys",default=False,action='store_true',
@@ -423,6 +440,7 @@ if __name__ == '__main__':
     histoName = cfg.getVariables(box, "histoName")
 
     myTH1 = None
+    print("args:",args)
     for f in args:
         if f.lower().endswith('.root'):
             if f.lower().find('resonanceshapes')!=-1:
@@ -430,14 +448,15 @@ if __name__ == '__main__':
             else:
                 rootFile = rt.TFile(f)
                 names = [k.GetName() for k in rootFile.GetListOfKeys()]
-		if type(histoName) == list:
-			myTH1 = rootFile.Get(histoName[0])
-			for histoN in histoName[1:]: myTH1.Add(rootFile.Get(histoN))
-                try:
-                    myTH1 = rootFile.Get(histoName)
-                    myTH1.Print('v')
-                except:
-                    print("%s not found in %s"%(histoName,f))
+                if type(histoName) == list:
+                    myTH1 = rootFile.Get(histoName[0])
+                    for histoN in histoName[1:]: myTH1.Add(rootFile.Get(histoN))
+                else:
+                    try:
+                        myTH1 = rootFile.Get(histoName)
+                        myTH1.Print('v')
+                    except:
+                        print("%s not found in %s"%(histoName,f))
     print("signalFileName ",signalFileName)
     print("myTH1 ",myTH1)
     print("rootFile ",f)
@@ -633,6 +652,10 @@ if __name__ == '__main__':
             shapes.append('jer')
             shapeFiles['jerUp'] = options.jerUpFile
             shapeFiles['jerDown'] = options.jerDownFile
+        if options.psUpFile is not None or options.psDownFile is not None:
+            shapes.append('ps')
+            shapeFiles['psUp'] = options.psUpFile
+            shapeFiles['psDown'] = options.psDownFile
 
     # JES and JER uncertainties
     hSigTh1x = signalHistos[0]
@@ -706,3 +729,4 @@ if __name__ == '__main__':
     w.Write()
     w.Print('v')
     os.system("cat %s"%options.outDir+"/"+outFile.replace(".root",".txt"))
+    del w

@@ -834,13 +834,11 @@ if __name__ == '__main__':
         d.Write()
 
 
+    w.Print()
     background_pdf = w.pdf('%s_bkg_unbin'%box)
     background= background_pdf.asTF(rt.RooArgList(w.var('mjj')),rt.RooArgList(w.var('p0_%s'%box)))
-    print "min:%s; max:%s; int_b:%s"%(w.var('mjj').getMin(), w.var('mjj').getMax(),background)
-    background.SaveAs("fits_trijet_2018/tf1.C")
     int_b = background.Integral(w.var('mjj').getMin(),w.var('mjj').getMax())
     print("int_b",int_b)
-    # exit()
     print("lumi",lumi)
     p0_b = w.var('Ntot_bkg_%s'%box).getVal() / (int_b * lumi)
     background.SetParameter(0,p0_b)
@@ -988,7 +986,7 @@ if __name__ == '__main__':
         for i in range(0,g_signal.GetN()):
             N = g_signal.GetY()[i]
             binWidth = g_signal.GetEXlow()[i] + g_signal.GetEXhigh()[i]
-            if g_signal.GetX()[i]>float(mass)*0.1 and notSet:
+            if g_signal.GetX()[i]>float(mass)*0.70 and notSet:
                 firstX = g_signal.GetX()[i]
                 firstY = N/(binWidth * lumi)
                 notSet = False
@@ -996,13 +994,13 @@ if __name__ == '__main__':
         for i in range(0,g_signal.GetN()):
             N = g_signal.GetY()[i]
             binWidth = g_signal.GetEXlow()[i] + g_signal.GetEXhigh()[i]
-            if g_signal.GetX()[i]<=float(mass)*0.1:
+            if g_signal.GetX()[i]<=float(mass)*0.70:
                 g_signal.SetPoint(i,firstX,firstY)
             else:
                 g_signal.SetPoint(i, g_signal.GetX()[i], N/(binWidth * lumi))
             g_signal.SetPointEYlow(i, 0)
             g_signal.SetPointEYhigh(i, 0)
-            if g_signal.GetX()[i]>float(mass)*3.5:
+            if g_signal.GetX()[i]>float(mass)*1.30:
                 g_signal.SetPoint(i,lastX,lastY)
             else:
                 lastX = g_signal.GetX()[i]
@@ -1363,7 +1361,7 @@ if __name__ == '__main__':
         for i in range(0,g_signal_residual.GetN()):
             N = g_signal_residual.GetY()[i]
             binWidth = g_signal_residual.GetEXlow()[i] + g_signal_residual.GetEXhigh()[i]
-            if g_signal_residual.GetX()[i]>float(mass)*0.5 and notSet:
+            if g_signal_residual.GetX()[i]>float(mass)*0.70 and notSet:
                 firstX = g_signal_residual.GetX()[i]
                 firstY = N
                 notSet = False
@@ -1371,13 +1369,13 @@ if __name__ == '__main__':
         for i in range(0,g_signal_residual.GetN()):
             N = g_signal_residual.GetY()[i]
             binWidth = g_signal_residual.GetEXlow()[i] + g_signal_residual.GetEXhigh()[i]
-            if g_signal_residual.GetX()[i]<=float(mass)*0.1:
+            if g_signal_residual.GetX()[i]<=float(mass)*0.70:
                 g_signal_residual.SetPoint(i,firstX,firstY)
             else:
                 g_signal_residual.SetPoint(i, g_signal_residual.GetX()[i], N)
             g_signal_residual.SetPointEYlow(i, 0)
             g_signal_residual.SetPointEYhigh(i, 0)
-            if g_signal_residual.GetX()[i]>float(mass)*3.5:
+            if g_signal_residual.GetX()[i]>float(mass)*1.30:
                 g_signal_residual.SetPoint(i,lastX,lastY)
             else:
                 lastX = g_signal_residual.GetX()[i]
@@ -1395,6 +1393,7 @@ if __name__ == '__main__':
         c.Print(options.outDir+"/fit_mjj_%s_%s_linearX.pdf"%(fitRegion.replace(',','_'),box))
         c.Print(options.outDir+"/fit_mjj_%s_%s_linearX.C"%(fitRegion.replace(',','_'),box))
 
+    
     tdirectory.cd()
     c.Write()
 
@@ -1417,7 +1416,11 @@ if __name__ == '__main__':
         outParFile.write("%s[%s],\n"%(name,finalParDict[name]))
 
     chi2=list_chi2AndNdf_background[4]
-    ndof=myRebinnedTH1.GetNbinsX()-int((((options.config).replace("Alt","*")).replace("Nom","*")).split("*")[1][0])
+    try:
+        ndof=myRebinnedTH1.GetNbinsX()-int((((options.config).replace("Alt","*")).replace("Nom","*")).split("*")[1][0])
+    except:
+        print("##### Set NDOF to 5 (default) ##########")
+        ndof=5
     outParFile.write("\nchi2 = %s\n"%chi2)
     outParFile.write("ndof = %s\n"%ndof)
     outParFile.write("prob = %s\n"%(rt.TMath.Prob(chi2,ndof)))
@@ -1429,3 +1432,5 @@ if __name__ == '__main__':
     outFile.cd()
     w.Write()
     outFile.Close()
+    del w
+    print("check1")

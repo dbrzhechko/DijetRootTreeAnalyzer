@@ -78,7 +78,8 @@ def g_qsim(Mres):
 
 def getThyXsecDict():
     thyXsecDict = {}
-    xsecFiles = ['data/all_lowmass_lhc13TeV.txt','data/rsg_gg_lhc13TeV.txt','data/S8_13TeV_narrow.txt','data/string_total_13TeV.txt','data/axi_lhc13TeV_NLO.txt','data/dm_xsec.txt','data/Zprimebb_xsec.txt','data/dmbb_xsec.txt']
+    xsecFiles = ['data/dm_xsec_interp.txt']
+#    xsecFiles = ['data/all_lowmass_lhc13TeV.txt','data/rsg_gg_lhc13TeV.txt','data/S8_13TeV_narrow.txt','data/string_total_13TeV.txt','data/axi_lhc13TeV_NLO.txt','data/dm_xsec.txt','data/Zprimebb_xsec.txt','data/dmbb_xsec.txt']
     print xsecFiles
     for xsecFile in xsecFiles:
         moreThyModels = []
@@ -100,14 +101,15 @@ def getThyXsecDict():
                     thyXsecDict[thyModel][int(float(lineList[0]))] = float(lineList[j+1])
         f.close()
 
-        thyXsecDict['AxigluonkNLO'] = {}
-    for (mass,thyXsec) in thyXsecDict['Axigluon'].iteritems():
-        thyXsecDict['AxigluonkNLO'][mass] = 1.08 * thyXsec
-    # for (mass,thyXsec) in thyXsecDict['DM1GeV'].iteritems():
-        # thyXsecDict['DM1GeV'][mass] = (5./6.) * thyXsec
-        # thyXsecDict['DM1GeV'][mass] = thyXsec
-    for (mass,thyXsec) in thyXsecDict['DMbb1GeV'].iteritems():
-        thyXsecDict['DMbb1GeV'][mass] = (5./6.) * thyXsec
+#        thyXsecDict['AxigluonkNLO'] = {}
+#    for (mass,thyXsec) in thyXsecDict['Axigluon'].iteritems():
+#        thyXsecDict['AxigluonkNLO'][mass] = 1.08 * thyXsec
+    print(thyXsecDict)
+    for (mass,thyXsec) in thyXsecDict['DM1GeV'].iteritems():
+         thyXsecDict['DM1GeV'][mass] = (5./6.) * thyXsec
+         thyXsecDict['DM1GeV'][mass] = thyXsec
+#    for (mass,thyXsec) in thyXsecDict['DMbb1GeV'].iteritems():
+#        thyXsecDict['DMbb1GeV'][mass] = (5./6.) * thyXsec
     return thyXsecDict
 
 
@@ -531,7 +533,8 @@ if __name__ == '__main__':
         if 'PF' in options.box and 'bb' in options.box:
             thyModelsToDraw = ["Zprimebb",'DMbb1GeV']
         else:
-            thyModelsToDraw = ['AxigluonkNLO','E6Diquark',"W'","Z'",'DM1GeV']
+#            thyModelsToDraw = ['AxigluonkNLO','E6Diquark',"W'","Z'",'DM1GeV']
+            thyModelsToDraw = ['DM1GeV']
     elif options.model=='qg':
         if 'PF' in options.box:
             thyModelsToDraw = ['String','q*']
